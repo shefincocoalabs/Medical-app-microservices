@@ -7,31 +7,31 @@ function contactController(methods, options) {
     var name = params.name;
     var email = params.email;
     var message = params.message;
-    // if (!name || !email || message) {
-    //   var errors = [];
-    //   if (!name) {
-    //     errors.push({
-    //       field: "name",
-    //       message: "Name cannot be empty"
-    //     });
-    //   }
-    //   if (!email) {
-    //     errors.push({
-    //       field: "email",
-    //       message: "Email cannot be empty"
-    //     });
-    //   }
-    //   if (!message) {
-    //     errors.push({
-    //       field: "message",
-    //       message: "Message cannot be empty"
-    //     });
-    //   }
-    //   return res.send({
-    //     success: 0,
-    //     errors: errors,
-    //   });
-    // }
+    if (!name || !email || !message) {
+      var errors = [];
+      if (!name) {
+        errors.push({
+          field: "name",
+          message: "Name cannot be empty"
+        });
+      }
+      if (!email) {
+        errors.push({
+          field: "email",
+          message: "Email cannot be empty"
+        });
+      }
+      if (!message) {
+        errors.push({
+          field: "message",
+          message: "Message cannot be empty"
+        });
+      }
+      return res.send({
+        success: 0,
+        errors: errors,
+      });
+    }
     const newContact = new Contact({
       name: name,
       email: email,
