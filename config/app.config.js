@@ -9,7 +9,7 @@ module.exports = {
     expirySeconds: 60 * 60
   },
   gateway: {
-    url: "http://localhost:8000"
+    url: "http://localhost:9000"
   },
   profile: {
     imageBase: commonStorePath + 'profile/'
