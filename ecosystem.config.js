@@ -11,7 +11,7 @@ module.exports = {
       //cron_restart
       env: {
         NODE_ENV: 'development',
-        port : 7001
+        port : 9001
       }
     },
     {
@@ -25,7 +25,7 @@ module.exports = {
       //cron_restart
       env: {
         NODE_ENV: 'development',
-        port : 7002
+        port : 9002
       }
     },
     {
@@ -39,7 +39,7 @@ module.exports = {
       //cron_restart
       env: {
         NODE_ENV: 'development',
-        port : 7003
+        port : 9003
       }
     },
     {
@@ -53,7 +53,7 @@ module.exports = {
       //cron_restart
       env: {
         NODE_ENV: 'development',
-        port : 7004
+        port : 9004
       }
     }
     ]
