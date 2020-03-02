@@ -21,7 +21,7 @@ function accountsController(methods, options) {
     var otp = Math.floor(1000 + Math.random() * 9000);
     const apiToken = uuidv4();
     const expiry = Date.now() + (otpConfig.expirySeconds * 1000);
-    if (!firstName || !email || phone) {
+    if (!firstName || !email || !phone) {
       var errors = [];
       if (!firstName) {
         errors.push({
@@ -41,11 +41,14 @@ function accountsController(methods, options) {
           message: "Phone cannot be empty"
         });
       }
+    }
+    if (errors.length > 0) {
       return res.send({
         success: 0,
         errors: errors,
       });
     }
+    
     var findCriteria = {
       phone: phone
     }
