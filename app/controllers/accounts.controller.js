@@ -41,13 +41,13 @@ function accountsController(methods, options) {
           message: "Phone cannot be empty"
         });
       }
-    }
-    if (errors.length > 0) {
       return res.send({
         success: 0,
         errors: errors,
       });
     }
+      
+    
     
     var findCriteria = {
       phone: phone
