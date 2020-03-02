@@ -12,7 +12,7 @@ function accountsController(methods, options) {
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
 
-// ** API for signup and send OTP **
+  // ** API for signup and send OTP **
   this.register = (req, res) => {
     var firstName = req.body.firstName;
     var email = req.body.email;
@@ -41,6 +41,10 @@ function accountsController(methods, options) {
           message: "Phone cannot be empty"
         });
       }
+      return res.send({
+        success: 0,
+        errors: errors,
+      });
     }
     var findCriteria = {
       phone: phone
@@ -245,7 +249,7 @@ function accountsController(methods, options) {
     });
   };
 
-// *** API for getting wish list for the user ***
+  // *** API for getting wish list for the user ***
   this.getWishList = (req, res) => {
     var params = req.query;
     var page = params.page || 1;
@@ -268,7 +272,7 @@ function accountsController(methods, options) {
       videoId: 1,
     };
     Bookmark.find(findCriteria, queryProjection, pageParams).populate({
-      path:'videoId',
+      path: 'videoId',
       Video,
       select: 'title video length description'
     }).limit(perPage).then(result => {
