@@ -92,7 +92,11 @@ function accountsController(methods, options) {
                 apiToken: data.apiToken,
                 isRegistered: 1
               }
-              res.send(otpGenerateResponse);
+              res.send({
+                success: 1,
+                message: 'New user is registered successfully and otp is sent to your registered number for verification',
+                otpGenerateResponse: otpGenerateResponse
+              });
             }).catch(err => {
               res.status(200).send({
                 success: 0,
@@ -143,7 +147,11 @@ function accountsController(methods, options) {
             apiToken: data.apiToken,
             isRegistered: 1
           }
-          res.send(otpGenerateResponse);
+          res.send({
+            success: 1,
+            message: 'otp generated and sent to the registered number',
+            otpGenerateResponse: otpGenerateResponse
+          });
         }).catch(err => {
           res.status(200).send({
             success: 0,
