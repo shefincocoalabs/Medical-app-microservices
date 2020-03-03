@@ -10,6 +10,7 @@ const UserSchema = mongoose.Schema({
     middleName: String,
     lastName: String,
     collegeId: { type: mongoose.Schema.Types.ObjectId, ref: 'College'},
+    deviceToken: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

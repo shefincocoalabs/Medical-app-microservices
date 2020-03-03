@@ -1,3 +1,8 @@
+function sendOtp() {
+  var otp = Math.floor(1000 + Math.random() * 9000);
+  return otp
+}
+
 function accountsController(methods, options) {
   var User = require('../models/user.model.js');
   var Otp = require('../models/otp.model.js');
@@ -8,6 +13,7 @@ function accountsController(methods, options) {
   const paramsConfig = require('../../config/params.config');
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
+  const expiry = Date.now() + (otpConfig.expirySeconds * 1000);
   var moment = require('moment');
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
@@ -20,7 +26,6 @@ function accountsController(methods, options) {
     var collegeId = req.body.collegeId;
     var otp = Math.floor(1000 + Math.random() * 9000);
     const apiToken = uuidv4();
-    const expiry = Date.now() + (otpConfig.expirySeconds * 1000);
     if (!firstName || !email || !phone) {
       var errors = [];
       if (!firstName) {
@@ -46,9 +51,9 @@ function accountsController(methods, options) {
         errors: errors,
       });
     }
-      
-    
-    
+
+
+
     var findCriteria = {
       phone: phone
     }
@@ -64,6 +69,7 @@ function accountsController(methods, options) {
         email: email,
         phone: phone,
         collegeId: collegeId,
+        deviceToken: '',
         status: 1,
         tsCreatedAt: Number(moment().unix()),
         tsModifiedAt: null
@@ -101,15 +107,73 @@ function accountsController(methods, options) {
     })
   }
 
+  this.otpLogin = (req, res) => {
+    var params = req.body;
+    var phone = params.phone;
+    const apiToken = uuidv4();
+    if (!phone) {
+      return res.send({
+        success: 0,
+        message: 'Phone cannot be empty'
+      })
+    }
+    var findCriteria = {
+      phone: phone
+    }
+    User.findOne(findCriteria).then(result => {
+      if (!result) {
+        return res.send({
+          success: 0,
+          message: 'Phone number is not registered'
+        })
+      }
+      const newOtp = new Otp({
+        phone: phone,
+        isUsed: false,
+        userToken: sendOtp(),
+        apiToken: apiToken,
+        expiry: expiry
+      });
+
+      newOtp.save()
+        .then(data => {
+          var otpGenerateResponse = {
+            phone: data.phone,
+            userToken: data.userToken,
+            apiToken: data.apiToken,
+            isRegistered: 1
+          }
+          res.send(otpGenerateResponse);
+        }).catch(err => {
+          res.status(200).send({
+            success: 0,
+            errors: [{
+              field: "phone",
+              message: err.message || "Some error occurred while generating otp"
+            }],
+            code: 200
+          });
+        });
+    })
+  }
+
   // *** API for validating OTP ***
   this.validateOtp = (req, res) => {
     var params = req.body;
     var otp = params.otp;
     var phone = params.phone;
     var apiToken = params.apiToken;
+    var deviceToken = params.deviceToken;
     var currentTime = Date.now();
-    if (!otp || !apiToken) {
+    var userId;
+    if (!phone || !otp || !apiToken || !deviceToken) {
       var errors = [];
+      if (!phone) {
+        errors.push({
+          field: "phone",
+          message: "phone is missing"
+        });
+      }
       if (!otp) {
         errors.push({
           field: "otp",
@@ -120,6 +184,12 @@ function accountsController(methods, options) {
         errors.push({
           field: "apiToken",
           message: "api Token is missing"
+        });
+      }
+      if (!deviceToken) {
+        errors.push({
+          field: "deviceToken",
+          message: "device Token is missing"
         });
       }
       return res.status(200).send({
@@ -144,11 +214,13 @@ function accountsController(methods, options) {
           User.findOne({
             phone: phone
           }).then(result => {
+            userId = result._id;
             var payload = {
               id: result._id,
               firstName: result.firstName,
               email: result.email,
-              phone: result.phone
+              phone: result.phone,
+              deviceToken: deviceToken
             }
             var token = jwt.sign({
               data: payload,
@@ -166,12 +238,21 @@ function accountsController(methods, options) {
             Otp.findOneAndUpdate(filter, update, {
               new: true
             }).then(result => {
-              return res.send({
-                success: 1,
-                message: 'Otp verified successfully',
-                userDetails: payload,
-                token: token
+              User.findOneAndUpdate({
+                _id: userId
+              }, {
+                deviceToken: deviceToken
+              }, {
+                new: true
+              }).then(result => {
+                return res.send({
+                  success: 1,
+                  message: 'Otp verified successfully',
+                  userDetails: payload,
+                  token: token
+                })
               })
+
             })
           })
         }
