@@ -18,7 +18,7 @@ module.exports = {
     imageBase: commonStorePath + '/images/books/categories/'
   },
   otp: {
-    expirySeconds: 2 * 60
+    expirySeconds: 5 * 60
   },
   wishList: {
     resultsPerPage: 30
