@@ -83,7 +83,6 @@ function accountsController(methods, options) {
             apiToken: apiToken,
             expiry: expiry
           });
-
           newOtp.save()
             .then(data => {
               var otpGenerateResponse = {
@@ -111,6 +110,7 @@ function accountsController(methods, options) {
     })
   }
 
+  // *** Send OTP ***
   this.otpLogin = (req, res) => {
     var params = req.body;
     var phone = params.phone;
