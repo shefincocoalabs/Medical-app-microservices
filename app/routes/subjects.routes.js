@@ -1,5 +1,5 @@
 module.exports = (app,methods,options) => {
-    const subject = methods.loadController('subject',options);
+    const subject = methods.loadController('subjects',options);
     subject.methods.get('/checking',subject.check, {auth:false});
     subject.methods.get('/list-subjects',subject.listSubjects, {auth:true});
     subject.methods.get('/list-chapters/:id',subject.listChapters, {auth:true});
