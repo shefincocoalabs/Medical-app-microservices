@@ -9,4 +9,6 @@ module.exports = (app,methods,options) => {
     subject.methods.post('/list-chapters/chapter-video-details/boomark-video/:id',subject.bookmarkVideo, {auth:true});
     subject.methods.delete('/list-chapters/chapter-video-details/boomark-video/remove/:id',subject.removeBookmark, {auth:true});
     subject.methods.get('/list-chapters/chapter-details/buy-chapter/:id',subject.buyChapters, {auth:true});
+    subject.methods.post('/payment',subject.payment, {auth:true});
+
 }

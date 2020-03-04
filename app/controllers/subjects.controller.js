@@ -7,6 +7,7 @@ function subjectController(methods, options) {
   var VideoType = require('../models/videoType.model.js');
   var Bookmark = require('../models/bookmark.model.js');
   var VideoRatings = require('../models/videoRating.model.js');
+  var Payment = require('../models/payment.model');
   var config = require('../../config/app.config.js');
   var subjectImageBase = config.subject.imageBase;
   var ObjectId = require('mongoose').Types.ObjectId;
@@ -357,5 +358,37 @@ function subjectController(methods, options) {
       })
     })
   }
+  // *** API for payment status update ***
+
+  this.payment = (req, res) => {
+    let userData = req.identity.data;
+    let userId = userData.id;
+    let paymentData = {
+      userId,
+      transactionId : req.body.transactionId,
+      amount : req.body.amount,
+      paidStatus : req.body.paidStatus,
+      paidOn : req.body.paidOn,
+      status : 1,
+      tsCreatedAt: Number(moment().unix()),
+      tsModifiedAt: null
+    }
+    const newPayment =  new Payment(paymentData);
+    newPayment.save()
+    .then(data => {
+      var paymentResponse = {
+        success: 1,
+        message: "Payment status updated successfully"
+      };
+      res.send(paymentResponse);
+    }).catch(err => {
+      res.status(500).send({
+        success: 0,
+        status: 500,
+        message: err.message || "Some error occurred while payment"
+      });
+    });
+  }
+
 }
 module.exports = subjectController
