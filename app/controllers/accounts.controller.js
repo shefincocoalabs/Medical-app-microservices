@@ -18,7 +18,7 @@ function accountsController(methods, options) {
   var currentTime = new Date().getTime();
   console.log(currentTime);
   var expiryDate = new Date();
-  expiryDate.setMinutes(expiryDate.getMinutes() + 5);
+  expiryDate.setMinutes(expiryDate.getMinutes() + 2);
   var expiry = expiryDate.getTime();
   console.log(expiry);
   const uuidv4 = require('uuid/v4');
