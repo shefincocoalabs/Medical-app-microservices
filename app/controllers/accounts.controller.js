@@ -167,14 +167,13 @@ function accountsController(methods, options) {
   }
 
   // *** API for validating OTP ***
-  this.validateOtp = (req, res) => {
+  this.validateOtp = async (req, res) => {
     var params = req.body;
     var otp = params.otp;
     var phone = params.phone;
     var apiToken = params.apiToken;
     var deviceToken = params.deviceToken;
     var currentTime = Date.now();
-    console.log(currentTime);
     var userId;
     if (!phone || !otp || !apiToken || !deviceToken) {
       var errors = [];
@@ -213,69 +212,64 @@ function accountsController(methods, options) {
       apiToken: apiToken,
       isUsed: false
     }
-    Otp.findOne(findCriteria).then(result => {
-      console.log(result);
-      if (result) {
-        if (parseInt(currentTime) > parseInt(result.expiry)) {
-          console.log('yes');
-          return res.send({
-            success: 0,
-            message: 'otp expired,please resend otp to get a new one'
-          })
-        } else {
-          console.log('no');
-          User.findOne({
-            phone: phone
-          }).then(result => {
-            userId = result._id;
-            var payload = {
-              id: result._id,
-              firstName: result.firstName,
-              email: result.email,
-              phone: result.phone,
-              deviceToken: deviceToken
-            }
-            var token = jwt.sign({
-              data: payload,
-              // exp: Math.floor(Date.now() / 1000) + JWT_EXPIRY_SECONDS
-            }, JWT_KEY, {
-              expiresIn: '10h'
-            });
-            var filter = {
-              userToken: otp,
-              apiToken: apiToken
-            }
-            var update = {
-              isUsed: true
-            }
-            Otp.findOneAndUpdate(filter, update, {
-              new: true
-            }).then(result => {
-              User.findOneAndUpdate({
-                _id: userId
-              }, {
-                deviceToken: deviceToken
-              }, {
-                new: true
-              }).then(result => {
-                return res.send({
-                  success: 1,
-                  message: 'Otp verified successfully',
-                  userDetails: payload,
-                  token: token
-                })
-              })
-
-            })
-          })
-        }
-      } else {
+    var otpData = await Otp.findOne(findCriteria)
+    if (otpData) {
+      if (parseInt(currentTime) > parseInt(otpData.expiry)) {
         return res.send({
           success: 0,
-          message: 'Otp does not matching'
+          message: 'otp expired,please resend otp to get a new one'
+        })
+      } else {
+        var result = await User.findOne({
+          phone: phone
+        })
+        userId = result._id;
+        var payload = {
+          id: result._id,
+          firstName: result.firstName,
+          email: result.email,
+          phone: result.phone,
+          deviceToken: deviceToken
+        }
+        var token = jwt.sign({
+          data: payload,
+          // exp: Math.floor(Date.now() / 1000) + JWT_EXPIRY_SECONDS
+        }, JWT_KEY, {
+          expiresIn: '10h'
+        });
+        var filter = {
+          userToken: otp,
+          apiToken: apiToken
+        }
+        var update = {
+          isUsed: true
+        }
+        Otp.findOneAndUpdate(filter, update, {
+          new: true
+        }).then(result => {
+          User.findOneAndUpdate({
+            _id: userId
+          }, {
+            deviceToken: deviceToken
+          }, {
+            new: true
+          }).then(result => {
+            return res.send({
+              success: 1,
+              message: 'Otp verified successfully',
+              userDetails: payload,
+              token: token
+            })
+          })
+
         })
       }
-    })
+    } else {
+      return res.send({
+        success: 0,
+        message: 'Otp does not matching'
+      })
+    }
   }
   // *** API for getting profile details ***
   this.getProfile = (req, res) => {
