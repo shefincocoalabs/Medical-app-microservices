@@ -216,10 +216,10 @@ function accountsController(methods, options) {
       apiToken: apiToken,
       isUsed: false
     }
+    console.log(currentTime);
+    console.log(expiry);
     var otpData = await Otp.findOne(findCriteria)
     if (otpData) {
-      console.log(currentTime);
-      console.log(otpData.expiry);
       if (parseInt(currentTime) > parseInt(otpData.expiry)) {
         return res.send({
           success: 0,
