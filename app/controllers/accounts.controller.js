@@ -15,12 +15,13 @@ function accountsController(methods, options) {
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
   var moment = require('moment');
-  var currentTime = new Date().getTime();
+  var currentDate = new Date();
+  var currentTime = currentDate.setMinutes(currentDate.getMinutes());
   console.log(currentTime);
   var expiryDate = new Date();
   expiryDate.setMinutes(expiryDate.getMinutes() + 2);
   var expiry = expiryDate.getTime();
-  // console.log(expiry);
+  console.log(expiry);
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
 
