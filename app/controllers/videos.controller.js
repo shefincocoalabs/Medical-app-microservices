@@ -1,32 +1,27 @@
 var gateway = require('../components/gateway.component.js');
 
-async function getVideos(perPage) {
-  let videos = await gateway.get('/videos', {
-    page: 1,
-    perPage: perPage
-  });
+async function getVideos(reqObj) {
+  let bearer = reqObj.bearer;
+  delete reqObj.bearer;
+  let videos = await gateway.getWithAuth('/videos', reqObj,bearer);
   return videos;
 };
 
 function videoController(methods, options) {
   var Videos = require('../models/videos.model.js');
-  var Users = require('../models/user.model.js');
+  var Users = require('../models/user.model');
   var config = require('../../config/app.config.js');
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
-    // var userData = req.identity.data;
-    // var userId = userData.id; 
-    var findCriteria = {
-        // userId: userId,
-        status: 1
-    };
-    // var purchasedChapters = await Users.findOne(findCriteria);
-    // if(purchasedChapters['purchasedChapterIds'].length > 0) {
-    //   const found = purchasedChapters['purchasedChapterIds'].find(element => element == 10);
-    // }
+  
+    let userData = req.identity.data;
+    let userId = userData.id;
+    let purchasedChapterIds = [];
+    let isPurchased = undefined;
+
    
     var filters = {
-      chapterId: chapterId,
+      // chapterId: chapterId,
       status: 1
     };
     var queryProjection = {};
@@ -40,7 +35,7 @@ function videoController(methods, options) {
       skip: offset,
       limit: perPage
     };
-
+  
     /* Sort */
     var sortOptions = {};
     if (params.sortBy) {
@@ -58,21 +53,65 @@ function videoController(methods, options) {
     } else {
       sortOptions.tsCreatedAt = -1;
     };
+  
+    let whereCondition = {
+      _id : userId,
+      status : 1
+    }
+    let ids  = await Users.findOne(whereCondition, {
+      purchasedChapterIds: 1
+    })
+    if(params.chapterId){
+      let id  = ids.purchasedChapterIds.find(element => element == params.chapterId);
+      if(id){
+        purchasedChapterIds.push(id);
+        isPurchased = true;
+      }else{
+        isPurchased = false;
+      }
+      filters.chapterId = params.chapterId;
+    }else{
+      purchasedChapterIds = ids.purchasedChapterIds;
+    }
+
     Videos.find(filters, queryProjection, pageParams).sort(sortOptions).limit(perPage).then(videoList => {
       Videos.countDocuments(filters, function (err, itemsCount) {
         var i = 0;
         var items = [];
-
         var itemsCountCurrentPage = videoList.length;
+        if(isPurchased || isPurchased === false){
         for (i = 0; i < itemsCountCurrentPage; i++) {
-
+          
           items.push({
             id: videoList[i]._id,
             title: videoList[i].title || null,
             image: videoList[i].video || null,
             averageRating: videoList[i].averageRating || null,
-            maxRating: videoList[i].length || null
+            maxRating: videoList[i].length || null,
+            chapterId : videoList[i].chapterId,
+            isFree : videoList[i].isFree,
+            isPurchased
           });
+        }
+        }else{
+          for (i = 0; i < itemsCountCurrentPage; i++) {
+            let chapterId = ids.purchasedChapterIds.find(element => element ==  videoList[i].chapterId + "");
+            if(chapterId){
+              isPurchased = true;
+            }else{
+              isPurchased = false;
+            }
+            items.push({
+              id: videoList[i]._id,
+              title: videoList[i].title || null,
+              image: videoList[i].video || null,
+              averageRating: videoList[i].averageRating || null,
+              maxRating: videoList[i].length || null,
+              chapterId : videoList[i].chapterId,
+              isFree : videoList[i].isFree,
+              isPurchased
+            });
+          }
         }
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
@@ -95,7 +134,13 @@ function videoController(methods, options) {
   };
   this.getSummary = async (req, res) => {
     var summary = {};
-    let popVideos = await getVideos(10)
+    let bearer = req.headers['authorization'];
+    let popRequestObj = {
+      page : 1,
+      perPage : 10,
+      bearer
+    }
+    let popVideos = await getVideos(popRequestObj)
       .catch(err => {
         return res.send({
           success: 0,
@@ -103,9 +148,14 @@ function videoController(methods, options) {
           error: err
         })
       });
-    let popularVideos = JSON.parse(popVideos)
 
-    let topVideos = await getVideos(10)
+    let popularVideos = JSON.parse(popVideos)
+    let topRequestObj = {
+      page : 1,
+      perPage : 10,
+      bearer
+    }
+    let topVideos = await getVideos(topRequestObj)
       .catch(err => {
         return res.send({
           success: 0,
@@ -114,8 +164,14 @@ function videoController(methods, options) {
         })
       });
     let topRatedVideos = JSON.parse(topVideos)
-
-    let newUploadedVideos = await getVideos(10)
+    let newUploadRequestObj = {
+      page : 1,
+      perPage : 10,
+      bearer,
+      sortOrder : "asc",
+      sortBy : "time"
+    }
+    let newUploadedVideos = await getVideos(newUploadRequestObj)
       .catch(err => {
         return res.send({
           success: 0,
@@ -124,8 +180,12 @@ function videoController(methods, options) {
         })
       });
     let newlyUploadedVideos = JSON.parse(newUploadedVideos)
-
-    let trainVideos = await getVideos(10)
+    let trainRequestObj = {
+      page : 1,
+      perPage : 10,
+      bearer
+    }
+    let trainVideos = await getVideos(trainRequestObj)
       .catch(err => {
         return res.send({
           success: 0,
@@ -134,8 +194,12 @@ function videoController(methods, options) {
         })
       });
     let trainingVideos = JSON.parse(trainVideos);
-
-    let recommendVideos = await getVideos(10)
+    let recommendRequestObj = {
+      page : 1,
+      perPage : 10,
+      bearer
+    }
+    let recommendVideos = await getVideos(recommendRequestObj)
       .catch(err => {
         return res.send({
           success: 0,

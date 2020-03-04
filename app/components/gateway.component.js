@@ -2,11 +2,12 @@ const superagent = require('superagent');
 var config = require('../../config/app.config.js');
 var gatewayUrl = config.gateway.url;
 module.exports = {
-    get: async function (path, params) {
+    getWithAuth: async function (path, params,bearer) {
         var url = gatewayUrl + path;
         console.log("Routing path " + url + " through gateway");
         return await superagent.get(url)
             .query(params)
+            .set({'Content-Type': 'application/json', 'authorization':  bearer})
             .then((res) => {
                 return res.text;
             })
