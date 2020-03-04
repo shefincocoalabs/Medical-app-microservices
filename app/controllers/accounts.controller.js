@@ -8,6 +8,7 @@ function accountsController(methods, options) {
   var Otp = require('../models/otp.model.js');
   var Bookmark = require('../models/bookmark.model.js');
   var Video = require('../models/videos.model.js');
+  var Chapter = require('../models/chapter.model.js');
   var config = require('../../config/app.config.js');
   var wishlistConfig = config.wishList;
   const paramsConfig = require('../../config/params.config');
@@ -212,7 +213,6 @@ function accountsController(methods, options) {
       isUsed: false
     }
     Otp.findOne(findCriteria).then(result => {
-      console.log(result);
       if (result) {
         if (parseInt(currentTime) > parseInt(result.expiry)) {
           return res.send({
@@ -387,7 +387,41 @@ function accountsController(methods, options) {
       })
     })
 
-
+  };
+  // *** API for listing purchaced chapters under my courses ***
+  this.myCourses = async (req, res) => {
+    var userData = req.identity.data;
+    // var userId = userData.id;
+    var userId = '5e5df6d9ca5df47636d39773';
+    var findCriteria = {
+      _id: userId
+    };
+    var purchasedChapterIds;
+    var purchasedChapterId;
+    let response;
+    let items = [];
+    let userDetails = await User.findOne(findCriteria)
+    purchasedChapterIds = userDetails.purchasedChapterIds;
+    await Promise.all(purchasedChapterIds.map(async (item) => {
+      purchasedChapterId = item;
+      let result = await Chapter.findOne({
+        _id: purchasedChapterId
+      });
+      let videosCount = await Video.countDocuments({
+        chapterId: purchasedChapterId
+      })
+      response = {
+        id: result._id,
+        title: result.title,
+        videosCount: videosCount
+      };
+      items.push(response)
+    }));
+    res.send({
+      success: 1,
+      message: 'My courses listed successfully',
+      items: items
+    })
   }
 }
 module.exports = accountsController

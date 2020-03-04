@@ -10,10 +10,23 @@ async function getVideos(perPage) {
 
 function videoController(methods, options) {
   var Videos = require('../models/videos.model.js');
+  var Users = require('../models/user.model.js');
   var config = require('../../config/app.config.js');
   var videoConfig = config.videos;
-  this.listVideos = (req, res) => {
+  this.listVideos = async (req, res) => {
+    // var userData = req.identity.data;
+    // var userId = userData.id; 
+    var findCriteria = {
+        // userId: userId,
+        status: 1
+    };
+    // var purchasedChapters = await Users.findOne(findCriteria);
+    // if(purchasedChapters['purchasedChapterIds'].length > 0) {
+    //   const found = purchasedChapters['purchasedChapterIds'].find(element => element == 10);
+    // }
+   
     var filters = {
+      chapterId: chapterId,
       status: 1
     };
     var queryProjection = {};
@@ -45,7 +58,6 @@ function videoController(methods, options) {
     } else {
       sortOptions.tsCreatedAt = -1;
     };
-
     Videos.find(filters, queryProjection, pageParams).sort(sortOptions).limit(perPage).then(videoList => {
       Videos.countDocuments(filters, function (err, itemsCount) {
         var i = 0;

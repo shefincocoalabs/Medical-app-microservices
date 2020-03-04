@@ -6,4 +6,5 @@ module.exports = (app,methods,options) => {
     accounts.methods.get('/get-profile',accounts.getProfile, {auth:true});
     accounts.methods.patch('/update-profile',accounts.updateProfile, {auth:true});
     accounts.methods.get('/wish-list',accounts.getWishList, {auth:true});
+    accounts.methods.get('/my-courses',accounts.myCourses, {auth:true});
 }
