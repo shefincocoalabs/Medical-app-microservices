@@ -378,7 +378,7 @@ function subjectController(methods, options) {
     .then(data => {
       var paymentResponse = {
         success: 1,
-        message: "Payment status updated successfully"
+        message: "Payment status submitted successfully"
       };
       res.send(paymentResponse);
     }).catch(err => {
