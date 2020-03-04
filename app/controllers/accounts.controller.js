@@ -213,8 +213,10 @@ function accountsController(methods, options) {
       isUsed: false
     }
     Otp.findOne(findCriteria).then(result => {
+      console.log(result);
       if (result) {
         if (parseInt(currentTime) > parseInt(result.expiry)) {
+          console.log('yes');
           return res.send({
             success: 0,
             message: 'otp expired,please resend otp to get a new one'
