@@ -15,9 +15,11 @@ function accountsController(methods, options) {
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
   var moment = require('moment');
-  var expiry = Number(moment.unix().utc())
-  //  + (otpConfig.expirySeconds * 1000);
-  console.log('expirytimestamp');
+  var currentTime = new Date().getTime();
+  console.log(currentTime);
+  var expiryDate = new Date();
+  expiryDate.setMinutes(expiryDate.getMinutes() + 5);
+  var expiry = expiryDate.getTime();
   console.log(expiry);
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
@@ -176,7 +178,6 @@ function accountsController(methods, options) {
     var phone = params.phone;
     var apiToken = params.apiToken;
     var deviceToken = params.deviceToken;
-    var currentTime = Number(moment.unix().utc());
     var userId;
     if (!phone || !otp || !apiToken || !deviceToken) {
       var errors = [];
@@ -217,10 +218,6 @@ function accountsController(methods, options) {
     }
     var otpData = await Otp.findOne(findCriteria)
     if (otpData) {
-      console.log(currentTime);
-      console.log('currentTime');
-      console.log(otpData.expiry);
-      console.log('expiry');
       if (parseInt(currentTime) > parseInt(otpData.expiry)) {
         return res.send({
           success: 0,
