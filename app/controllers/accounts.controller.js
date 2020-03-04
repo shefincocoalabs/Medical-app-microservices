@@ -20,7 +20,7 @@ function accountsController(methods, options) {
   console.log(expiry);
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
-  var dt = new Date();
+  var dt = new Date().setMinutes();
   console.log(dt);
   console.log('dt');
   var addeddt = dt.setMinutes(dt.getMinutes() + 30);
