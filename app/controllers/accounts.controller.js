@@ -16,7 +16,7 @@ function accountsController(methods, options) {
   var otpConfig = config.otp;
   var moment = require('moment');
   var currentTime = new Date().getTime();
-  // console.log(currentTime);
+  console.log(currentTime);
   var expiryDate = new Date();
   expiryDate.setMinutes(expiryDate.getMinutes() + 2);
   var expiry = expiryDate.getTime();
@@ -216,16 +216,20 @@ function accountsController(methods, options) {
       apiToken: apiToken,
       isUsed: false
     }
-    console.log(currentTime);
-    console.log(expiry);
-    var otpData = await Otp.findOne(findCriteria)
+    // console.log(currentTime);
+    // console.log(expiry);
+    var otpData = await Otp.findOne(findCriteria);
     if (otpData) {
+      console.log('yes');
+      console.log(parseInt(currentTime));
+      console.log(parseInt(otpData.expiry));
       if (parseInt(currentTime) > parseInt(otpData.expiry)) {
         return res.send({
           success: 0,
           message: 'otp expired,please resend otp to get a new one'
         })
       } else {
+        console.log('no');
         var result = await User.findOne({
           phone: phone
         })
