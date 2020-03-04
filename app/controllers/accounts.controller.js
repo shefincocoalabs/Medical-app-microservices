@@ -222,6 +222,7 @@ function accountsController(methods, options) {
             message: 'otp expired,please resend otp to get a new one'
           })
         } else {
+          console.log('no');
           User.findOne({
             phone: phone
           }).then(result => {
