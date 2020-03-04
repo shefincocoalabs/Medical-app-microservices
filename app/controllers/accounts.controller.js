@@ -174,6 +174,7 @@ function accountsController(methods, options) {
     var apiToken = params.apiToken;
     var deviceToken = params.deviceToken;
     var currentTime = Date.now();
+    console.log(currentTime);
     var userId;
     if (!phone || !otp || !apiToken || !deviceToken) {
       var errors = [];
