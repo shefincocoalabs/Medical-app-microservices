@@ -16,11 +16,11 @@ function accountsController(methods, options) {
   var otpConfig = config.otp;
   var moment = require('moment');
   var currentTime = new Date().getTime();
-  console.log(currentTime);
+  // console.log(currentTime);
   var expiryDate = new Date();
   expiryDate.setMinutes(expiryDate.getMinutes() + 2);
   var expiry = expiryDate.getTime();
-  console.log(expiry);
+  // console.log(expiry);
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
 
@@ -218,6 +218,8 @@ function accountsController(methods, options) {
     }
     var otpData = await Otp.findOne(findCriteria)
     if (otpData) {
+      console.log(currentTime);
+      console.log(otpData.expiry);
       if (parseInt(currentTime) > parseInt(otpData.expiry)) {
         return res.send({
           success: 0,
