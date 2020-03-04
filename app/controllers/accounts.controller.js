@@ -15,12 +15,6 @@ function accountsController(methods, options) {
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
   var moment = require('moment');
-  var now = moment();
-  console.log(now);
-  console.log('now');
-  var future = now.add(5, 'minutes');
-  console.log(future);
-  console.log('future');
   var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
   console.log('expirytimestamp');
   console.log(expiry);
