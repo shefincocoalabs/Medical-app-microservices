@@ -22,7 +22,6 @@ function videoController(methods, options) {
     let purchasedChapterIds = [];
     let isPurchased = undefined;
 
-
     var filters = {
       // chapterId: chapterId,
       status: 1
@@ -64,58 +63,84 @@ function videoController(methods, options) {
     let ids = await Users.findOne(whereCondition, {
       purchasedChapterIds: 1
     })
-    if (params.chapterId) {
-      let id = ids.purchasedChapterIds.find(element => element == params.chapterId);
-      if (id) {
-        purchasedChapterIds.push(id);
-        isPurchased = true;
-      } else {
-        isPurchased = false;
-      }
-      filters.chapterId = params.chapterId;
-    } else {
-      purchasedChapterIds = ids.purchasedChapterIds;
+    // if (params.chapterId) {
+    //   let id = ids.purchasedChapterIds.find(element => element == params.chapterId);
+    //   if (id) {
+    //     purchasedChapterIds.push(id);
+    //     isPurchased = true;
+    //   } else {
+    //     isPurchased = false;
+    //   }
+    //   filters.chapterId = params.chapterId;
+    // } else {
+    if(ids !== null){  
+    purchasedChapterIds = ids.purchasedChapterIds;
     }
+    // }
 
-    Videos.find(filters, queryProjection, pageParams).sort(sortOptions).limit(perPage).then(videoList => {
+    Videos.find(filters, queryProjection, pageParams)
+    .sort(sortOptions)
+    .limit(perPage)
+    .populate({
+    path: 'videoTypeId',
+    VideoType,
+    match: {
+      status: 1
+    },
+    select: '_id name'
+  }).populate({
+    path: 'subCategoryId',
+    VideoType,
+    match: {
+      status: 1
+    },
+    select: '_id name'
+  })
+  .lean()
+    .then(videoList => {
       Videos.countDocuments(filters, function (err, itemsCount) {
         var i = 0;
         var items = [];
         var itemsCountCurrentPage = videoList.length;
-        if (isPurchased || isPurchased === false) {
+        // if (isPurchased || isPurchased === false) {
+        //   for (i = 0; i < itemsCountCurrentPage; i++) {
+         
+        //     items.push({
+        //       id: videoList[i]._id,
+        //       title: videoList[i].title || null,
+        //       image: videoList[i].video || null,
+        //       averageRating: videoList[i].averageRating || null,
+        //       maxRating: videoList[i].length || null,
+        //       chapterId: videoList[i].chapterId,
+        //       isFree: videoList[i].isFree,
+        //       isPurchased
+        //     });
+        //   }
+        // } else {
           for (i = 0; i < itemsCountCurrentPage; i++) {
-
-            items.push({
-              id: videoList[i]._id,
-              title: videoList[i].title || null,
-              image: videoList[i].video || null,
-              averageRating: videoList[i].averageRating || null,
-              maxRating: videoList[i].length || null,
-              chapterId: videoList[i].chapterId,
-              isFree: videoList[i].isFree,
-              isPurchased
-            });
-          }
-        } else {
-          for (i = 0; i < itemsCountCurrentPage; i++) {
-            let chapterId = ids.purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
+           
+            let chapterId = purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
             if (chapterId) {
               isPurchased = true;
             } else {
               isPurchased = false;
             }
-            items.push({
-              id: videoList[i]._id,
-              title: videoList[i].title || null,
-              image: videoList[i].video || null,
-              averageRating: videoList[i].averageRating || null,
-              maxRating: videoList[i].length || null,
-              chapterId: videoList[i].chapterId,
-              isFree: videoList[i].isFree,
-              isPurchased
-            });
+            videoList[i].isPurchased = isPurchased;
+            items.push(videoList);
+            // items.push({
+            //   id: videoList[i]._id,
+            //   title: videoList[i].title || null,
+            //   image: videoList[i].video || null,
+            //   averageRating: videoList[i].averageRating || null,
+            //   maxRating: videoList[i].length || null,
+            //   chapterId: videoList[i].chapterId,
+            //   isFree: videoList[i].isFree,
+            //   videoTypeId : videoList[i].videoTypeId,
+            //   subCategoryId : videoList[i].subCategoryId,
+            //   isPurchased
+            // });
           }
-        }
+        // }
         totalPages = itemsCount / perPage;
         totalPages = Math.ceil(totalPages);
         var hasNextPage = page < totalPages;
@@ -138,21 +163,7 @@ function videoController(methods, options) {
   this.getSummary = async (req, res) => {
     var summary = {};
     let bearer = req.headers['authorization'];
-    let popRequestObj = {
-      page: 1,
-      perPage: 10,
-      bearer
-    }
-    let popVideos = await getVideos(popRequestObj)
-      .catch(err => {
-        return res.send({
-          success: 0,
-          message: 'Something went wrong while listing popular videos',
-          error: err
-        })
-      });
 
-    let popularVideos = JSON.parse(popVideos)
     let topRequestObj = {
       page: 1,
       perPage: 10,
@@ -197,26 +208,7 @@ function videoController(methods, options) {
         })
       });
     let trainingVideos = JSON.parse(trainVideos);
-    let recommendRequestObj = {
-      page: 1,
-      perPage: 10,
-      bearer
-    }
-    let recommendVideos = await getVideos(recommendRequestObj)
-      .catch(err => {
-        return res.send({
-          success: 0,
-          message: 'Something went wrong while listing recommended videos',
-          error: err
-        })
-      })
-    let recommendedVideos = JSON.parse(recommendVideos);
 
-    let poplularVideosSummary = {
-      imageBase: popularVideos.imageBase,
-      totalItems: popularVideos.totalItems,
-      items: popularVideos.items
-    };
     let topRatedVideoSummary = {
       imageBase: topRatedVideos.imageBase,
       totalItems: topRatedVideos.totalItems,
@@ -233,16 +225,10 @@ function videoController(methods, options) {
       items: trainingVideos.items
     };
 
-    let recommendedVideosSummary = {
-      imageBase: recommendedVideos.imageBase,
-      totalItems: recommendedVideos.totalItems,
-      items: recommendedVideos.items
-    };
     summary.topRatedVideoSummary = topRatedVideoSummary;
     summary.newlyUploadedVideosSummary = newlyUploadedVideosSummary;
     summary.trainingVideosSummary = trainingVideosSummary;
-    summary.poplularVideosSummary = poplularVideosSummary;
-    summary.recommendedVideosSummary = recommendedVideosSummary;
+ 
     res.send({
       success: 1,
       message: 'Video summary fetched successfully',
