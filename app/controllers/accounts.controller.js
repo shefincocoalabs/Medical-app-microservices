@@ -251,7 +251,7 @@ function accountsController(methods, options) {
           data: payload,
           // exp: Math.floor(Date.now() / 1000) + JWT_EXPIRY_SECONDS
         }, JWT_KEY, {
-          expiresIn: '10h'
+          expiresIn: '30 days'
         });
         var filter = {
           userToken: otp,
