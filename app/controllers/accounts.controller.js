@@ -251,14 +251,16 @@ function accountsController(methods, options) {
           isUsed: true
         }
         Otp.findOneAndUpdate(filter, update, {
-          new: true
+          new: true,
+          useFindAndModify: false
         }).then(result => {
           User.findOneAndUpdate({
             _id: userId
           }, {
             deviceToken: deviceToken
           }, {
-            new: true
+            new: true,
+            useFindAndModify: false
           }).then(result => {
             return res.send({
               success: 1,
@@ -331,7 +333,8 @@ function accountsController(methods, options) {
       _id: userId
     };
     User.findOneAndUpdate(filter, update, {
-      new: true
+      new: true,
+      useFindAndModify: false
     }).then(result => {
       res.send({
         success: 1,
