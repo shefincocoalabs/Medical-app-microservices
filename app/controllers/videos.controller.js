@@ -382,10 +382,11 @@ function videoController(methods, options) {
       subCategoryVideoArray.push(item);
     }));
     let responseObj = {
-      popularVideos : popularVideosArray,
-      subCategories : subCategoryVideoArray,
       success: 1,
       message: 'Home videos listed successfully',
+      imageBase: videoConfig.imageBase,
+      popularVideos : popularVideosArray,
+      subCategories : subCategoryVideoArray
     }
     res.send(responseObj);
    
