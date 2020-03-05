@@ -23,7 +23,7 @@ function accountsController(methods, options) {
   var jwt = require('jsonwebtoken');
 
   // ** API for signup and send OTP **
-  this.register = (req, res) => {
+  this.register = async(req, res) => {
     var firstName = req.body.firstName;
     var email = req.body.email;
     var phone = req.body.phone;
@@ -61,7 +61,7 @@ function accountsController(methods, options) {
     var findCriteria = {
       phone: phone
     }
-    User.findOne(findCriteria).then(result => {
+    let result = await User.findOne(findCriteria)
       if (result) {
         return res.send({
           success: 0,
@@ -110,8 +110,13 @@ function accountsController(methods, options) {
                 code: 200
               });
             });
-        })
-    })
+        }).catch(err => {
+          res.status(200).send({
+            success: 0,
+            errors: err,
+            code: 200
+          });
+        });
   }
 
   // *** Send OTP ***
