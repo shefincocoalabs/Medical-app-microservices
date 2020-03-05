@@ -15,13 +15,10 @@ function accountsController(methods, options) {
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
   var moment = require('moment');
-  var currentDate = new Date();
-  var currentTime = currentDate.setMinutes(currentDate.getMinutes());
+  var currentTime = Date.now();
   console.log(currentTime);
-  var expiryDate = new Date();
-  expiryDate.setMinutes(expiryDate.getMinutes() + 2);
-  var expiry = expiryDate.getTime();
-  console.log(expiry);
+  var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
+  console.log(expiry);  
   const uuidv4 = require('uuid/v4');
   var jwt = require('jsonwebtoken');
 
@@ -119,6 +116,7 @@ function accountsController(methods, options) {
 
   // *** Send OTP ***
   this.otpLogin = (req, res) => {
+    console.log(expiry);
     var params = req.body;
     var phone = params.phone;
     const apiToken = uuidv4();
@@ -217,20 +215,17 @@ function accountsController(methods, options) {
       apiToken: apiToken,
       isUsed: false
     }
-    // console.log(currentTime);
-    // console.log(expiry);
     var otpData = await Otp.findOne(findCriteria);
     if (otpData) {
-      console.log('yes');
-      console.log(parseInt(currentTime));
-      console.log(parseInt(otpData.expiry));
-      if (parseInt(currentTime) > parseInt(otpData.expiry)) {
+      console.log(currentTime);
+      console.log(otpData.expiry);
+      console.log((parseInt(currentTime)) > (parseInt(otpData.expiry)));
+      if ((parseInt(currentTime)) > (parseInt(otpData.expiry))) {
         return res.send({
           success: 0,
           message: 'otp expired,please resend otp to get a new one'
         })
       } else {
-        console.log('no');
         var result = await User.findOne({
           phone: phone
         })
