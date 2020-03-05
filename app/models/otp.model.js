@@ -8,7 +8,7 @@ const OtpSchema = mongoose.Schema({
     userToken : String,
     apiToken : String,
     smsResponse : String,
-    expiry : String,
+    expiry : Number,
     tsCreatedAt : Number,
     tsModifiedAt : Number
 })
