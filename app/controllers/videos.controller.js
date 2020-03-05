@@ -386,7 +386,7 @@ function videoController(methods, options) {
       message: 'Home videos listed successfully',
       imageBase: videoConfig.imageBase,
       popularVideos : popularVideosArray,
-      subCategories : subCategoryVideoArray
+      recommended : subCategoryVideoArray
     }
     res.send(responseObj);
    
