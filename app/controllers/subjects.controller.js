@@ -156,7 +156,15 @@ function subjectController(methods, options) {
       })
     })
     var chapterDetails = {};
-    chapterDetails.chapter = chapter;
+    chapterDetails.author = chapter.authorIds;
+    chapterDetails._id = chapter._id;
+    chapterDetails.title = chapter.title;
+    chapterDetails.subtitle = chapter.subtitle;
+    chapterDetails.description = chapter.description;
+    chapterDetails.image = chapter.image;
+    chapterDetails.bannerImage = chapter.bannerImage;
+    chapterDetails.gradientStartColorHex = chapter.gradientStartColorHex;
+    chapterDetails.gradientEndColorHex = chapter.gradientEndColorHex;
     chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
