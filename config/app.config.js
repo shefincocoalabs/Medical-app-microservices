@@ -17,6 +17,12 @@ module.exports = {
   subject: {
     imageBase: commonStorePath + '/images/books/categories/'
   },
+  author: {
+   imageBase: commonStorePath + '/images/books/categories/'
+  },
+  chapterBannerImage: {
+    imageBase: commonStorePath + '/images/books/categories/'
+  },
   otp: {
     expirySeconds: 2 * 60
   },

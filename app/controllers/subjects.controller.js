@@ -10,6 +10,8 @@ function subjectController(methods, options) {
   var Payment = require('../models/payment.model');
   var config = require('../../config/app.config.js');
   var subjectImageBase = config.subject.imageBase;
+  var authorImageBase = config.author.imageBase;
+  var chapterBannerImageBase = config.chapterBannerImage.imageBase;
   var ObjectId = require('mongoose').Types.ObjectId;
   var moment = require('moment');
 
@@ -169,6 +171,8 @@ function subjectController(methods, options) {
     res.send({
       success: 1,
       message: 'Chapters details listed successfully',
+      authorImageBase: authorImageBase,
+      chapterBannerImageBase: chapterBannerImageBase,
       chapterDetails: chapterDetails,
     })
   };
