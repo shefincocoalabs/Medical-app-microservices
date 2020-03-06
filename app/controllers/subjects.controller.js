@@ -167,7 +167,7 @@ function subjectController(methods, options) {
     chapterDetails.bannerImage = chapter.bannerImage;
     chapterDetails.gradientStartColorHex = chapter.gradientStartColorHex;
     chapterDetails.gradientEndColorHex = chapter.gradientEndColorHex;
-    chapterDetails.chapterVideos = chapterVideos;
+    // chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
       message: 'Chapters details listed successfully',
