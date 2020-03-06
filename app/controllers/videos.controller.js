@@ -99,7 +99,7 @@ function videoController(methods, options) {
               isPurchased = false;
             }
             videoList[i].isPurchased = isPurchased;
-            items.push(videoList);
+            items.push(videoList[i]);
           }
           totalPages = itemsCount / perPage;
           totalPages = Math.ceil(totalPages);
