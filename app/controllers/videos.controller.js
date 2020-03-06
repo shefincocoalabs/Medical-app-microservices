@@ -63,62 +63,35 @@ function videoController(methods, options) {
     let ids = await Users.findOne(whereCondition, {
       purchasedChapterIds: 1
     })
-    // if (params.chapterId) {
-    //   let id = ids.purchasedChapterIds.find(element => element == params.chapterId);
-    //   if (id) {
-    //     purchasedChapterIds.push(id);
-    //     isPurchased = true;
-    //   } else {
-    //     isPurchased = false;
-    //   }
-    //   filters.chapterId = params.chapterId;
-    // } else {
-    if(ids !== null){  
-    purchasedChapterIds = ids.purchasedChapterIds;
+    if (ids !== null) {
+      purchasedChapterIds = ids.purchasedChapterIds;
     }
-    // }
 
     Videos.find(filters, queryProjection, pageParams)
-    .sort(sortOptions)
-    .limit(perPage)
-    .populate({
-    path: 'videoTypeId',
-    VideoType,
-    match: {
-      status: 1
-    },
-    select: '_id name'
-  }).populate({
-    path: 'subCategoryId',
-    VideoType,
-    match: {
-      status: 1
-    },
-    select: '_id name'
-  })
-  .lean()
-    .then(videoList => {
-      Videos.countDocuments(filters, function (err, itemsCount) {
-        var i = 0;
-        var items = [];
-        var itemsCountCurrentPage = videoList.length;
-        // if (isPurchased || isPurchased === false) {
-        //   for (i = 0; i < itemsCountCurrentPage; i++) {
-         
-        //     items.push({
-        //       id: videoList[i]._id,
-        //       title: videoList[i].title || null,
-        //       image: videoList[i].video || null,
-        //       averageRating: videoList[i].averageRating || null,
-        //       maxRating: videoList[i].length || null,
-        //       chapterId: videoList[i].chapterId,
-        //       isFree: videoList[i].isFree,
-        //       isPurchased
-        //     });
-        //   }
-        // } else {
+      .sort(sortOptions)
+      .limit(perPage)
+      .populate({
+        path: 'videoTypeId',
+        VideoType,
+        match: {
+          status: 1
+        },
+        select: '_id name'
+      }).populate({
+        path: 'subCategoryId',
+        VideoType,
+        match: {
+          status: 1
+        },
+        select: '_id name'
+      })
+      .lean()
+      .then(videoList => {
+        Videos.countDocuments(filters, function (err, itemsCount) {
+          var i = 0;
+          var items = [];
+          var itemsCountCurrentPage = videoList.length;
           for (i = 0; i < itemsCountCurrentPage; i++) {
-           
             let chapterId = purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
             if (chapterId) {
               isPurchased = true;
@@ -127,38 +100,25 @@ function videoController(methods, options) {
             }
             videoList[i].isPurchased = isPurchased;
             items.push(videoList);
-            // items.push({
-            //   id: videoList[i]._id,
-            //   title: videoList[i].title || null,
-            //   image: videoList[i].video || null,
-            //   averageRating: videoList[i].averageRating || null,
-            //   maxRating: videoList[i].length || null,
-            //   chapterId: videoList[i].chapterId,
-            //   isFree: videoList[i].isFree,
-            //   videoTypeId : videoList[i].videoTypeId,
-            //   subCategoryId : videoList[i].subCategoryId,
-            //   isPurchased
-            // });
           }
-        // }
-        totalPages = itemsCount / perPage;
-        totalPages = Math.ceil(totalPages);
-        var hasNextPage = page < totalPages;
-        var responseObj = {
-          success: 1,
-          message: 'Videos listed successfully',
-          imageBase: videoConfig.imageBase,
-          items: items,
-          page: page,
-          perPage: perPage,
-          hasNextPage: hasNextPage,
-          totalItems: itemsCount,
-          totalPages: totalPages
-        }
+          totalPages = itemsCount / perPage;
+          totalPages = Math.ceil(totalPages);
+          var hasNextPage = page < totalPages;
+          var responseObj = {
+            success: 1,
+            message: 'Videos listed successfully',
+            imageBase: videoConfig.imageBase,
+            items: items,
+            page: page,
+            perPage: perPage,
+            hasNextPage: hasNextPage,
+            totalItems: itemsCount,
+            totalPages: totalPages
+          }
 
-        res.send(responseObj);
+          res.send(responseObj);
+        })
       })
-    })
   };
   this.getSummary = async (req, res) => {
     var summary = {};
@@ -228,7 +188,7 @@ function videoController(methods, options) {
     summary.topRatedVideoSummary = topRatedVideoSummary;
     summary.newlyUploadedVideosSummary = newlyUploadedVideosSummary;
     summary.trainingVideosSummary = trainingVideosSummary;
- 
+
     res.send({
       success: 1,
       message: 'Video summary fetched successfully',
@@ -240,84 +200,88 @@ function videoController(methods, options) {
   this.getHomeVideo = async (req, res) => {
     let userData = req.identity.data;
     let userId = userData.id;
-
     let whereCondition = {
       _id: userId,
       status: 1
     }
     //find user purchased chapters
     let ids = await Users.findOne(whereCondition, {
-      purchasedChapterIds: 1
-    })
-    .catch(err => {
-      return res.send({
-        success: 0,
-        message: 'Something went wrong while getting purchase chapters',
-        error: err
+        purchasedChapterIds: 1
       })
-    });
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while getting purchase chapters',
+          error: err
+        })
+      });
 
     //list popular videos list
     let popularVideos = await Videos.find({
-      status: 1
-    }).populate({
-      path: 'videoTypeId',
-      VideoType,
-      match: {
         status: 1
-      },
-      select: '_id name'
-    }).populate({
-      path: 'subCategoryId',
-      VideoType,
-      match: {
-        status: 1
-      },
-      select: '_id name'
-    }).limit(5).lean()
-    .catch(err => {
-      return res.send({
-        success: 0,
-        message: 'Something went wrong while listing popular videos',
-        error: err
-      })
-    });
+      }).populate({
+        path: 'videoTypeId',
+        VideoType,
+        match: {
+          status: 1
+        },
+        select: '_id name'
+      }).populate({
+        path: 'subCategoryId',
+        VideoType,
+        match: {
+          status: 1
+        },
+        select: '_id name'
+      }).limit(5).lean()
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while listing popular videos',
+          error: err
+        })
+      });
     let popularVideosArray = [];
 
     //set video purchsed or not
     await Promise.all(popularVideos.map(async (item) => {
+      if (ids !== null) {
         let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
         if (id) {
           item.isPurchased = true;
         } else {
           item.isPurchased = false;
         }
-        popularVideosArray.push(item);
+      } else {
+        item.isPurchased = false;
+
+      }
+      popularVideosArray.push(item);
     }));
 
     //find count of subcategories
     let count = await SubCategory.countDocuments({
-      status: 1
-    })  
-    .catch(err => {
-      return res.send({
-        success: 0,
-        message: 'Something went wrong while getting subcategory count',
-        error: err
+        status: 1
       })
-    });
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while getting subcategory count',
+          error: err
+        })
+      });
 
     //find list subcategories
     let subCategories = await SubCategory.find({
-      status: 1
-    }).skip(Math.random() * count).limit(3).lean()
-    .catch(err => {
-      return res.send({
-        success: 0,
-        message: 'Something went wrong while listing subcategories',
-        error: err
-      })
-    });
+        status: 1
+      }).skip(Math.random() * count).limit(3).lean()
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while listing subcategories',
+          error: err
+        })
+      });
 
     let subIdArray = [];
     for (let i = 0; i < subCategories.length; i++) {
@@ -327,25 +291,25 @@ function videoController(methods, options) {
     //find videos of subcategories 
 
     let videos = await Videos.find({
-      subCategoryId: {
-        $in: subIdArray
-      },
-      status: 1
-    }).populate({
-      path: 'videoTypeId',
-      VideoType,
-      match: {
+        subCategoryId: {
+          $in: subIdArray
+        },
         status: 1
-      },
-      select: '_id name'
-    }).lean()
-    .catch(err => {
-      return res.send({
-        success: 0,
-        message: 'Something went wrong while listing subcategory videos',
-        error: err
-      })
-    });
+      }).populate({
+        path: 'videoTypeId',
+        VideoType,
+        match: {
+          status: 1
+        },
+        select: '_id name'
+      }).lean()
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while listing subcategory videos',
+          error: err
+        })
+      });
     let i = 0;
     let subCategoryVideoArray = [];
 
@@ -356,12 +320,17 @@ function videoController(methods, options) {
       item.videos = [];
       for (let i = 0; i < videos.length; i++) {
         if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
+          if (ids !== null) {
+
           let id = ids.purchasedChapterIds.find(element => element == videos[i].chapterId + "");
           if (id) {
             videos[i].isPurchased = true;
           } else {
             videos[i].isPurchased = false;
           }
+        }else{
+          videos[i].isPurchased = false;
+        }
           item.videos.push(videos[i]);
         }
       }
@@ -371,11 +340,93 @@ function videoController(methods, options) {
       success: 1,
       message: 'Home videos listed successfully',
       imageBase: videoConfig.imageBase,
-      popularVideos : popularVideosArray,
-      recommended : subCategoryVideoArray
+      popularVideos: popularVideosArray,
+      recommended: subCategoryVideoArray
     }
     res.send(responseObj);
-   
+
   }
+  // this.getChapterVideo = async (req, res) => {
+
+  //   if (params.chapterId) {
+  //     let ids = await Users.findOne(whereCondition, {
+  //         purchasedChapterIds: 1
+  //       })
+  //       .catch(err => {
+  //         return res.send({
+  //           success: 0,
+  //           message: 'Something went wrong while getting purchase chapters',
+  //           error: err
+  //         })
+  //       });
+  //     let subCategories = await SubCategory.find({
+  //         status: 1,
+  //         chapterId: params.chapterId
+  //       }).skip(Math.random() * count).lean()
+  //       .catch(err => {
+  //         return res.send({
+  //           success: 0,
+  //           message: 'Something went wrong while listing subcategories',
+  //           error: err
+  //         })
+  //       });
+  //     let subIdArray = [];
+  //     for (let i = 0; i < subCategories.length; i++) {
+  //       subIdArray[i] = subCategories[i]._id;
+  //     }
+  //     let videos = await Videos.find({
+  //         subCategoryId: {
+  //           $in: subIdArray
+  //         },
+  //         status: 1
+  //       }).populate({
+  //         path: 'videoTypeId',
+  //         VideoType,
+  //         match: {
+  //           status: 1
+  //         },
+  //         select: '_id name'
+  //       }).lean()
+  //       .catch(err => {
+  //         return res.send({
+  //           success: 0,
+  //           message: 'Something went wrong while listing subcategory videos',
+  //           error: err
+  //         })
+  //       });
+  //     if (ids !== null) {
+  //       purchasedChapterIds = ids.purchasedChapterIds;
+  //       let id = ids.purchasedChapterIds.find(element => element == params.chapterId);
+
+  //       if (id) {
+  //         purchasedChapterIds.push(id);
+  //         isPurchased = true;
+  //       } else {
+  //         isPurchased = false;
+  //       }
+  //     } else {
+  //       isPurchased = false;
+  //     }
+  //     await Promise.all(subCategories.map(async (item) => {
+  //       let subCategoryId = item._id;
+  //       item.videos = [];
+  //       for (let i = 0; i < videos.length; i++) {
+  //         if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
+  //           videos[i].isPurchased = true;
+  //           item.videos.push(videos[i]);
+  //           subCategoryVideoArray.push(item);
+  //         }
+  //       }
+  //     }));
+  //     let responseObj = {
+  //       success: 1,
+  //       message: 'Home videos listed successfully',
+  //       imageBase: videoConfig.imageBase,
+  //       popularVideos: popularVideosArray,
+  //       recommended: subCategoryVideoArray
+  //     }
+  //     res.send(responseObj);
+  //   }
+  // }
 }
 module.exports = videoController;
