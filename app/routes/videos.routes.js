@@ -3,5 +3,6 @@ module.exports = (app,methods,options) => {
     video.methods.get('/',video.listVideos, {auth:true});
     video.methods.get('/summary',video.getSummary, {auth:true});
     video.methods.get('/home',video.getHomeVideo, {auth:true});
+    video.methods.get('/chapter',video.getChapterVideo, {auth:true});
     
 }

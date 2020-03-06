@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const SubCategorySchema = mongoose.Schema({
-    chapterId: String,
+    chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter'}, 
     name: String,
     status: Number,
     userIdCreator : Number,

@@ -346,87 +346,95 @@ function videoController(methods, options) {
     res.send(responseObj);
 
   }
-  // this.getChapterVideo = async (req, res) => {
+  this.getChapterVideo = async (req, res) => {
+    let params = req.query;
+    let userData = req.identity.data;
+    let userId = userData.id;
+    let whereCondition = {
+      _id: userId,
+      status: 1
+    }
+    if (params.chapterId) {
+      let ids = await Users.findOne(whereCondition, {
+          purchasedChapterIds: 1
+        })
+        .catch(err => {
+          return res.send({
+            success: 0,
+            message: 'Something went wrong while getting purchase chapters',
+            error: err
+          })
+        });
+ 
+      let subCategories = await SubCategory.find({
+          status: 1,
+          chapterId: params.chapterId.trim()
+        }).lean()
+        .catch(err => {
+          return res.send({
+            success: 0,
+            message: 'Something went wrong while listing subcategories',
+            error: err
+          })
+        });
+      let subIdArray = [];
 
-  //   if (params.chapterId) {
-  //     let ids = await Users.findOne(whereCondition, {
-  //         purchasedChapterIds: 1
-  //       })
-  //       .catch(err => {
-  //         return res.send({
-  //           success: 0,
-  //           message: 'Something went wrong while getting purchase chapters',
-  //           error: err
-  //         })
-  //       });
-  //     let subCategories = await SubCategory.find({
-  //         status: 1,
-  //         chapterId: params.chapterId
-  //       }).skip(Math.random() * count).lean()
-  //       .catch(err => {
-  //         return res.send({
-  //           success: 0,
-  //           message: 'Something went wrong while listing subcategories',
-  //           error: err
-  //         })
-  //       });
-  //     let subIdArray = [];
-  //     for (let i = 0; i < subCategories.length; i++) {
-  //       subIdArray[i] = subCategories[i]._id;
-  //     }
-  //     let videos = await Videos.find({
-  //         subCategoryId: {
-  //           $in: subIdArray
-  //         },
-  //         status: 1
-  //       }).populate({
-  //         path: 'videoTypeId',
-  //         VideoType,
-  //         match: {
-  //           status: 1
-  //         },
-  //         select: '_id name'
-  //       }).lean()
-  //       .catch(err => {
-  //         return res.send({
-  //           success: 0,
-  //           message: 'Something went wrong while listing subcategory videos',
-  //           error: err
-  //         })
-  //       });
-  //     if (ids !== null) {
-  //       purchasedChapterIds = ids.purchasedChapterIds;
-  //       let id = ids.purchasedChapterIds.find(element => element == params.chapterId);
+      for (let i = 0; i < subCategories.length; i++) {
+        subIdArray[i] = subCategories[i]._id;
+      }
+      let videos = await Videos.find({
+          subCategoryId: {
+            $in: subIdArray
+          },
+          status: 1
+        }).populate({
+          path: 'videoTypeId',
+          VideoType,
+          match: {
+            status: 1
+          },
+          select: '_id name'
+        }).lean()
+        .catch(err => {
+          return res.send({
+            success: 0,
+            message: 'Something went wrong while listing subcategory videos',
+            error: err
+          })
+        });
+      if (ids !== null) {
+        purchasedChapterIds = ids.purchasedChapterIds;
+        let id = purchasedChapterIds.find(element => element == params.chapterId);
+        if (id) {
+          purchasedChapterIds.push(id);
+          isPurchased = true;
+        } else {
+          isPurchased = false;
+        }
+      } else {
+        isPurchased = false;
+      }
+      let subCategoryVideoArray = [];
+      await Promise.all(subCategories.map(async (item) => {
+        let subCategoryId = item._id;
+        item.videos = [];
+        for (let i = 0; i < videos.length; i++) {
+          if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
+            videos[i].isPurchased = isPurchased;
+            item.videos.push(videos[i]);
+            subCategoryVideoArray.push(item);
+          }
+        }
+      }));
+      let responseObj = {
+        success: 1,
+        message: 'Home videos listed successfully',
+        imageBase: videoConfig.imageBase,
+        subCategories: subCategoryVideoArray,
 
-  //       if (id) {
-  //         purchasedChapterIds.push(id);
-  //         isPurchased = true;
-  //       } else {
-  //         isPurchased = false;
-  //       }
-  //     } else {
-  //       isPurchased = false;
-  //     }
-  //     await Promise.all(subCategories.map(async (item) => {
-  //       let subCategoryId = item._id;
-  //       item.videos = [];
-  //       for (let i = 0; i < videos.length; i++) {
-  //         if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
-  //           videos[i].isPurchased = true;
-  //           item.videos.push(videos[i]);
-  //           subCategoryVideoArray.push(item);
-  //         }
-  //       }
-  //     }));
-  //     let responseObj = {
-  //       success: 1,
-  //       message: 'Home videos listed successfully',
-  //       imageBase: videoConfig.imageBase,
-  //       popularVideos: popularVideosArray,
-  //       recommended: subCategoryVideoArray
-  //     }
-  //     res.send(responseObj);
-  //   }
-  // }
+      }
+      res.send(responseObj);
+    }
+  }
 }
 module.exports = videoController;
