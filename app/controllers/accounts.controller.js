@@ -24,9 +24,10 @@ function accountsController(methods, options) {
     var email = req.body.email;
     var phone = req.body.phone;
     var collegeId = req.body.collegeId;
+    var acceptTerms = re.body.acceptTerms;
     var otp = Math.floor(1000 + Math.random() * 9000);
     const apiToken = uuidv4();
-    if (!firstName || !email || !phone) {
+    if (!firstName || !email || !phone || !acceptTerms) {
       var errors = [];
       if (!firstName) {
         errors.push({
@@ -44,6 +45,12 @@ function accountsController(methods, options) {
         errors.push({
           field: "phone",
           message: "Phone cannot be empty"
+        });
+      }
+      if (!acceptTerms) {
+        errors.push({
+          field: "terms and conditions",
+          message: "Terms and conditions cannot be empty"
         });
       }
       return res.send({
@@ -69,7 +76,8 @@ function accountsController(methods, options) {
         firstName: firstName,
         email: email,
         phone: phone,
-        collegeId: collegeId,
+        // collegeId: collegeId,
+        acceptTerms: acceptTerms,
         deviceToken: '',
         status: 1,
         tsCreatedAt: Number(moment().unix()),

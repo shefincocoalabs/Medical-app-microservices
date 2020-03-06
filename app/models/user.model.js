@@ -10,6 +10,7 @@ const UserSchema = mongoose.Schema({
     middleName: String,
     lastName: String,
     collegeId: { type: mongoose.Schema.Types.ObjectId, ref: 'College'},
+    acceptTerms: Boolean,
     deviceToken: String,
     purchasedChapterIds: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject',default:null}],
     status: Number,
