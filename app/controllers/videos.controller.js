@@ -422,9 +422,9 @@ function videoController(methods, options) {
           if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
             videos[i].isPurchased = isPurchased;
             item.videos.push(videos[i]);
-            subCategoryVideoArray.push(item);
           }
         }
+        subCategoryVideoArray.push(item);
       }));
       let responseObj = {
         success: 1,
