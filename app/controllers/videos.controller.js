@@ -347,7 +347,7 @@ function videoController(methods, options) {
 
   }
   this.getChapterVideo = async (req, res) => {
-    let params = req.query;
+    let params = req.params;
     let userData = req.identity.data;
     let userId = userData.id;
     let whereCondition = {
