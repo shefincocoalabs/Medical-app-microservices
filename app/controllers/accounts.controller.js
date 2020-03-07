@@ -24,7 +24,7 @@ function accountsController(methods, options) {
     var email = req.body.email;
     var phone = req.body.phone;
     var collegeId = req.body.collegeId;
-    var acceptTerms = re.body.acceptTerms;
+    var acceptTerms = req.body.acceptTerms;
     var otp = Math.floor(1000 + Math.random() * 9000);
     const apiToken = uuidv4();
     if (!firstName || !email || !phone || !acceptTerms) {
@@ -58,7 +58,6 @@ function accountsController(methods, options) {
         errors: errors,
       });
     }
-
 
     var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
 
