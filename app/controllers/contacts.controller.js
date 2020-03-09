@@ -1,5 +1,6 @@
 function contactController(methods, options) {
   var Contact = require('../models/contact.model.js');
+  var Pages = require('../models/page.model.js');
   var moment = require('moment');
   // *** API for submitting contact us ***
   this.saveContact = (req, res) => {
@@ -54,6 +55,32 @@ function contactController(methods, options) {
           message: err.message || "Some error occurred while submitting contact."
         });
       });
+  };
+
+  this.getContact = (req, res) => {
+    var queryProjection = {
+      email: 1,
+      phone: 1,
+      address: 1,
+      name: 1,
+      status: 1
+    };
+    Pages.find({
+      seoTitle: 'contact-us',
+      status: 1
+    }, queryProjection).then(result => {
+      if (!result) {
+        return res.send({
+          success: 0,
+          message: 'No results found'
+        })
+      }
+      res.send({
+        success: 1,
+        items: result,
+        message: 'contact-us fetched successfully'
+      })
+    })
   }
 }
 module.exports = contactController

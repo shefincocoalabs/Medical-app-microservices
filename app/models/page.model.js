@@ -5,6 +5,10 @@ const PageSchema = mongoose.Schema({
     seoTitle: String,
     description: String,
     image: String,
+    name: String,
+    email: String,   
+    phone: String,
+    address: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
