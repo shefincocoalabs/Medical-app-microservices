@@ -1,4 +1,4 @@
-var commonStorePath = 'http://172.104.61.150/learning/common/uploads/'
+var commonStorePath = 'http://172.104.61.150/learning/common/uploads'
 module.exports = {
   sms: {
     fromNo: "",
@@ -12,7 +12,7 @@ module.exports = {
     url: "http://localhost:9000"
   },
   profile: {
-    imageBase: commonStorePath + 'profile/'
+    imageBase: commonStorePath + '/profile/'
   },
   subject: {
     imageBase: commonStorePath + '/images/books/categories/'

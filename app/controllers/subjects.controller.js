@@ -12,10 +12,10 @@ function subjectController(methods, options) {
   var Payment = require('../models/payment.model');
   var config = require('../../config/app.config.js');
   var subjectImageBase = config.subject.imageBase;
-  var authorImageBase = config.author.imageBase;
   var chapterBannerImageBase = config.chapterBannerImage.imageBase;
   var ObjectId = require('mongoose').Types.ObjectId;
   var moment = require('moment');
+  var videoConfig = config.videos;
 
   // *** API for getting subject list ***
   this.listSubjects = (req, res) => {
@@ -178,6 +178,7 @@ function subjectController(methods, options) {
     // chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
+      
       message: 'Chapters details listed successfully',
       authorImageBase: authorImageBase,
       chapterBannerImageBase: chapterBannerImageBase,
@@ -284,6 +285,7 @@ function subjectController(methods, options) {
           error: err
         })
       })
+ 
     let chapterId = result.chapterId._id;
     let subCategoryId = result.subCategoryId._id;
     let sortOrder = result.subCategoryId.sortOrder;
@@ -378,6 +380,7 @@ function subjectController(methods, options) {
     }
 
     res.send({
+      imageBase: videoConfig.imageBase,
       success: 1,
       message: 'video details listed successfully',
       items: result,
