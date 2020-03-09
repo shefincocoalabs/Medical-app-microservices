@@ -416,8 +416,7 @@ function accountsController(methods, options) {
   // *** API for listing purchaced chapters under my courses ***
   this.myCourses = async (req, res) => {
     var userData = req.identity.data;
-    // var userId = userData.id;
-    var userId = '5e5df6d9ca5df47636d39773';
+    var userId = userData.id;
     var findCriteria = {
       _id: userId
     };
@@ -425,8 +424,14 @@ function accountsController(methods, options) {
     var purchasedChapterId;
     let response;
     let items = [];
-    let userDetails = await User.findOne(findCriteria)
+    let userDetails = await User.findOne(findCriteria);
     purchasedChapterIds = userDetails.purchasedChapterIds;
+    if(purchasedChapterIds.length == 0) {
+      return res.send({
+        success: 0,
+        message: 'User is not purchased any chapter'
+      })
+    }
     await Promise.all(purchasedChapterIds.map(async (item) => {
       purchasedChapterId = item;
       let result = await Chapter.findOne({
