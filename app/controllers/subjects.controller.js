@@ -136,6 +136,12 @@ function subjectController(methods, options) {
         error: err
       })
     });
+    if(!chapter) {
+      return res.send({
+        success: 0,
+        message: 'Chapter details not found fo this Id'
+      })
+    }
     var projectChapterVideoData = {
       _id: 1,
       title: 1,
@@ -158,15 +164,15 @@ function subjectController(methods, options) {
       })
     })
     var chapterDetails = {};
-    chapterDetails.author = chapter.authorIds;
-    chapterDetails._id = chapter._id;
-    chapterDetails.title = chapter.title;
-    chapterDetails.subtitle = chapter.subtitle;
-    chapterDetails.description = chapter.description;
-    chapterDetails.image = chapter.image;
-    chapterDetails.bannerImage = chapter.bannerImage;
-    chapterDetails.gradientStartColorHex = chapter.gradientStartColorHex;
-    chapterDetails.gradientEndColorHex = chapter.gradientEndColorHex;
+    chapterDetails.author = chapter ? chapter.authorIds : '';
+    chapterDetails._id = chapter ? chapter._id : '';
+    chapterDetails.title = chapter ? chapter.title : '';
+    chapterDetails.subtitle = chapter ? chapter.subtitle : '';
+    chapterDetails.description = chapter ? chapter.description : '';
+    chapterDetails.image = chapter ? chapter.image : '';
+    chapterDetails.bannerImage = chapter ? chapter.bannerImage : '';
+    chapterDetails.gradientStartColorHex = chapter ? chapter.gradientStartColorHex : '';
+    chapterDetails.gradientEndColorHex = chapter ? chapter.gradientEndColorHex : '';
     // chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
@@ -358,7 +364,7 @@ function subjectController(methods, options) {
     chapters.findOne({
       _id: chapterId,
       status: 1
-    },queryProjection).then(chapterResponse => {
+    }, queryProjection).then(chapterResponse => {
       Videos.find(findCriteria).then(result => {
         videosCount = result.length;
         res.send({
@@ -377,29 +383,29 @@ function subjectController(methods, options) {
     let userId = userData.id;
     let paymentData = {
       userId,
-      transactionId : req.body.transactionId,
-      amount : req.body.amount,
-      paidStatus : req.body.paidStatus,
-      paidOn : req.body.paidOn,
-      status : 1,
+      transactionId: req.body.transactionId,
+      amount: req.body.amount,
+      paidStatus: req.body.paidStatus,
+      paidOn: req.body.paidOn,
+      status: 1,
       tsCreatedAt: Number(moment().unix()),
       tsModifiedAt: null
     }
-    const newPayment =  new Payment(paymentData);
+    const newPayment = new Payment(paymentData);
     newPayment.save()
-    .then(data => {
-      var paymentResponse = {
-        success: 1,
-        message: "Payment status submitted successfully"
-      };
-      res.send(paymentResponse);
-    }).catch(err => {
-      res.status(500).send({
-        success: 0,
-        status: 500,
-        message: err.message || "Some error occurred while payment"
+      .then(data => {
+        var paymentResponse = {
+          success: 1,
+          message: "Payment status submitted successfully"
+        };
+        res.send(paymentResponse);
+      }).catch(err => {
+        res.status(500).send({
+          success: 0,
+          status: 500,
+          message: err.message || "Some error occurred while payment"
+        });
       });
-    });
   }
 
 }
