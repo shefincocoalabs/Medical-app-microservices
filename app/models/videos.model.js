@@ -10,6 +10,7 @@ const VideoSchema = mongoose.Schema({
     description: String,
     isFree: Boolean,
     averageRating: String,
+    thumbnail: String,
     chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' },
     subCategoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory' },
     userIdCreator: Number,
