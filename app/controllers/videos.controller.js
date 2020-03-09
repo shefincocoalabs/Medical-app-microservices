@@ -13,6 +13,7 @@ function videoController(methods, options) {
   var config = require('../../config/app.config.js');
   var SubCategory = require('../models/subCategory.model');
   var VideoType = require('../models/videoType.model.js');
+  var Chapter = require('../models/chapter.model');
 
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
@@ -377,6 +378,18 @@ function videoController(methods, options) {
             error: err
           })
         });
+        let chapter = await Chapter.findOne({
+          status: 1,
+          _id: params.chapterId.trim()
+        }).lean()
+        .catch(err => {
+          return res.send({
+            success: 0,
+            message: 'Something went wrong while listing subcategories',
+            error: err
+          })
+        });
+
       let subIdArray = [];
 
       for (let i = 0; i < subCategories.length; i++) {
@@ -431,7 +444,7 @@ function videoController(methods, options) {
         message: 'Home videos listed successfully',
         imageBase: videoConfig.imageBase,
         subCategories: subCategoryVideoArray,
-
+        summaryVideo : chapter.summaryVideo
       }
       res.send(responseObj);
     }
