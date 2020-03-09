@@ -417,7 +417,8 @@ function accountsController(methods, options) {
     var userData = req.identity.data;
     var userId = userData.id;
     var findCriteria = {
-      _id: userId
+      _id: userId,
+      status: 1
     };
     var purchasedChapterIds;
     var purchasedChapterId;
@@ -434,10 +435,12 @@ function accountsController(methods, options) {
     await Promise.all(purchasedChapterIds.map(async (item) => {
       purchasedChapterId = item;
       let result = await Chapter.findOne({
-        _id: purchasedChapterId
+        _id: purchasedChapterId,
+        status: 1
       });
       let videosCount = await Video.countDocuments({
-        chapterId: purchasedChapterId
+        chapterId: purchasedChapterId,
+        status: 1
       })
       response = {
         id: result._id,
