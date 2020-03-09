@@ -62,6 +62,7 @@ function contactController(methods, options) {
       email: 1,
       phone: 1,
       address: 1,
+      name: 1,
       status: 1
     };
     Pages.find({
