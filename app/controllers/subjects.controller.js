@@ -203,7 +203,6 @@ function subjectController(methods, options) {
     }
     let userData = req.identity.data;
     let userId = userData.id;
- 
     let whereCondition = {
       _id: userId,
       status: 1
@@ -287,6 +286,12 @@ function subjectController(methods, options) {
       })
  
     let chapterId = result.chapterId._id;
+    let id = ids.purchasedChapterIds.find(element => element == chapterId+ "");
+    if(id){
+      result.isPurchased = true;
+    }else{
+      result.isPurchased = false;
+    }
     let subCategoryId = result.subCategoryId._id;
     let sortOrder = result.subCategoryId.sortOrder;
     let next = {};
