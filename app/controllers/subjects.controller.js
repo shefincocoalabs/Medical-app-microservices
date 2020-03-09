@@ -4,9 +4,11 @@ function subjectController(methods, options) {
   var Authors = require('../models/author.model.js');
   var Videos = require('../models/videos.model.js');
   var Notes = require('../models/note.model.js');
+  var Users = require('../models/user.model');
   var VideoType = require('../models/videoType.model.js');
   var Bookmark = require('../models/bookmark.model.js');
   var VideoRatings = require('../models/videoRating.model.js');
+  var SubCategories = require('../models/subCategory.model');
   var Payment = require('../models/payment.model');
   var config = require('../../config/app.config.js');
   var subjectImageBase = config.subject.imageBase;
@@ -183,7 +185,7 @@ function subjectController(methods, options) {
     })
   };
   // *** API for getting video detail of a chapter ***
-  this.chapterVideoDetail = (req, res) => {
+  this.chapterVideoDetail = async (req, res) => {
     var videoId = req.params.id;
     var isValidId = ObjectId.isValid(videoId);
     if (!isValidId) {
@@ -198,8 +200,28 @@ function subjectController(methods, options) {
       res.send(responseObj);
       return;
     }
+    let userData = req.identity.data;
+    let userId = userData.id;
+ 
+    let whereCondition = {
+      _id: userId,
+      status: 1
+    }
+    //find user purchased chapters
+    let ids = await Users.findOne(whereCondition, {
+        purchasedChapterIds: 1
+      })
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while getting purchase chapters',
+          error: err
+        })
+      });
+
     var findCriteria = {
-      _id: videoId
+      _id: videoId,
+      status: 1
     };
     var queryProjection = {
       noteIds: 1,
@@ -212,15 +234,18 @@ function subjectController(methods, options) {
       description: 1,
       isFree: 1,
       averageRating: 1,
-      chapterId: 1
+      chapterId: 1,
+      subCategoryId: 1,
+      status: 1
+
     };
-    Videos.findOne(findCriteria, queryProjection).populate({
+    let result = await Videos.findOne(findCriteria, queryProjection).populate({
         path: 'noteIds',
         Notes,
         match: {
           status: 1
         },
-        select: '_id name file'
+        select: '_id name file '
       }).populate({
         path: 'videoTypeId',
         VideoType,
@@ -244,13 +269,122 @@ function subjectController(methods, options) {
         },
         select: '_id title subtitle'
       })
-      .then(result => {
-        res.send({
-          success: 1,
-          message: 'video details listed successfully',
-          items: result
+      .populate({
+        path: 'subCategoryId',
+        chapters,
+        match: {
+          status: 1
+        },
+        select: '_id chapterId name status sortOrder'
+      }).lean()
+      .catch(err => {
+        return res.send({
+          success: 0,
+          message: 'Something went wrong while fetching videos data',
+          error: err
         })
       })
+    let chapterId = result.chapterId._id;
+    let subCategoryId = result.subCategoryId._id;
+    let sortOrder = result.subCategoryId.sortOrder;
+    let next = {};
+    let prev = {};
+
+    next = await SubCategories.findOne({
+      sortOrder: {
+        $gt: sortOrder
+      },
+      chapterId,
+      status: 1
+    }).sort({
+      sortOrder: 1
+    }).limit(1).lean()
+    prev = await SubCategories.findOne({
+      sortOrder: {
+        $lt: sortOrder
+      },
+      chapterId,
+      status: 1
+    }).sort({
+      sortOrder: 1
+    }).limit(1).lean()
+
+    if (next != null) {
+      let nextVideos = await Videos.find({
+          chapterId,
+          subCategoryId: next._id,
+          status: 1
+        })
+        .populate({
+          path: 'videoTypeId',
+          VideoType,
+          match: {
+            status: 1
+          },
+          select: '_id name'
+        }).lean()
+        next.videos = [];
+        await Promise.all(nextVideos.map(async (item) => {
+          if (ids !== null) {
+            let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
+            if (id) {
+              item.isPurchased = true;
+            } else {
+              item.isPurchased = false;
+            }
+          } else {
+            item.isPurchased = false;
+    
+          }
+          next.videos.push(item);
+        }));
+    } else {
+      next = {};
+    }
+
+    if (prev != null) {
+      let prevVideos = await Videos.find({
+          chapterId,
+          subCategoryId: next._id,
+          status: 1
+        })
+        .populate({
+          path: 'videoTypeId',
+          VideoType,
+          match: {
+            status: 1
+          },
+          select: '_id name'
+        }).lean()
+
+        prev.videos = [];
+
+        await Promise.all(prevVideos.map(async (item) => {
+          if (ids !== null) {
+            let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
+            if (id) {
+              item.isPurchased = true;
+            } else {
+              item.isPurchased = false;
+            }
+          } else {
+            item.isPurchased = false;
+    
+          }
+          prev.videos.push(item);
+        }));
+    } else {
+      prev = {}
+    }
+
+    res.send({
+      success: 1,
+      message: 'video details listed successfully',
+      items: result,
+      next,
+      prev
+
+    })
   }
 
   // *** API for submitting rating of a video ***

@@ -4,6 +4,7 @@ const SubCategorySchema = mongoose.Schema({
     chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter'}, 
     name: String,
     status: Number,
+    sortOrder: Number,
     userIdCreator : Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
