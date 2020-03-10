@@ -275,7 +275,8 @@ function videoController(methods, options) {
     //find list subcategories
     let subCategories = await SubCategory.find({
         status: 1
-      }).skip(Math.random() * count).limit(3).lean()
+      }).limit(3).lean()
+    // }).skip(Math.random() * count).limit(3).lean()
       .catch(err => {
         return res.send({
           success: 0,
