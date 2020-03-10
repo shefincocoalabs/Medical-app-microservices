@@ -18,7 +18,7 @@ module.exports = {
     imageUploadPath: commonStorePath + '/profile/'
   },
   file: {
-    imageBase: commonStorePath + '/uploads/'
+    imageBase: commonStorePath + '/files/'
   },
   subject: {
     imageBase: commonStorePath + '/images/books/categories/'
