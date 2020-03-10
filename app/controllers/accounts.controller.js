@@ -330,6 +330,7 @@ function accountsController(methods, options) {
     var userData = req.identity.data;
     var userId = userData.id;
     var params = req.body;
+    var profileImage = req.file;
     if (!params.firstName && !params.email && !params.phone) {
       return res.send({
         success: 0,
@@ -454,6 +455,24 @@ function accountsController(methods, options) {
       message: 'My courses listed successfully',
       items: items
     })
+  };
+
+  this.uploadProfileImage = (req,res) => {
+    console.log('hihihi')
+    console.log(req.files);
+    var files = req.files;
+    console.log(files)
+    if (req.files.images) {
+      console.log("Image field detected");
+      type = "image";
+      var len = files.images.length;
+      var i = 0;
+      while (i < len) {
+        images.push(files.images[i].filename);
+        i++;
+      }
+      console.log("images is " + images);
+    }
   }
 }
 module.exports = accountsController

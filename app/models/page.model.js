@@ -11,7 +11,7 @@ const PageSchema = mongoose.Schema({
     address: String,
     status: Number,
     tsCreatedAt: Number,
-    tsModifiedAt: Number
+    tsModifiedAt: Number 
 
 });
 module.exports = mongoose.model('Page', PageSchema, 'Pages');

@@ -12,7 +12,9 @@ module.exports = {
     url: "http://localhost:9000"
   },
   profile: {
-    imageBase: commonStorePath + 'profile/'
+    imageUploadPath: commonStorePath + 'profile',
+    imageBase: commonStorePath + 'profile/',
+    maxImageCount: 10
   },
   subject: {
     imageBase: commonStorePath + '/images/books/categories/'
