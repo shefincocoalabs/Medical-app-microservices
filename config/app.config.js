@@ -8,6 +8,7 @@ module.exports = {
   jwt: {
     expirySeconds: 60 * 60
   },
+
   gateway: {
     url: "http://localhost:9000"
   },
@@ -15,6 +16,9 @@ module.exports = {
     maxImageCount: 10,
     imageBase: commonStorePath + '/profile/',
     imageUploadPath: commonStorePath + '/profile/'
+  },
+  file: {
+    imageBase: commonStorePath + '/uploads/'
   },
   subject: {
     imageBase: commonStorePath + '/images/books/categories/'
