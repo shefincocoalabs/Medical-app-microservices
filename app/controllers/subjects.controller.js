@@ -286,12 +286,16 @@ function subjectController(methods, options) {
       })
  
     let chapterId = result.chapterId._id;
+    if(ids !== null ){
     let id = ids.purchasedChapterIds.find(element => element == chapterId+ "");
     if(id){
       result.isPurchased = true;
     }else{
       result.isPurchased = false;
     }
+  }else{
+    result.isPurchased = false;
+  }
     let subCategoryId = result.subCategoryId._id;
     let sortOrder = result.subCategoryId.sortOrder;
     let next = {};
