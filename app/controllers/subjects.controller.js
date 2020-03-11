@@ -16,6 +16,8 @@ function subjectController(methods, options) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var moment = require('moment');
   var videoConfig = config.videos;
+  var authorConfig = config.author;
+  var authorImageBase = authorConfig.imageBase;
   var noteConfig = config.file;
   
   // *** API for getting subject list ***
