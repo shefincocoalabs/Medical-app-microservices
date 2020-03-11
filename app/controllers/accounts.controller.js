@@ -392,7 +392,7 @@ function accountsController(methods, options) {
     Bookmark.find(findCriteria, queryProjection, pageParams).populate({
       path: 'videoId',
       Video,
-      select: 'title video length description averageRating status'
+      select: 'title video length description averageRating thumbnail status'
     }).limit(perPage).then(result => {
       Bookmark.countDocuments(findCriteria, function (err, itemsCount) {
         totalPages = itemsCount / perPage;
