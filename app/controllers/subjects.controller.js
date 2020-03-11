@@ -185,6 +185,7 @@ function subjectController(methods, options) {
       message: 'Chapters details listed successfully',
       authorImageBase: authorImageBase,
       chapterBannerImageBase: chapterBannerImageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       chapterDetails: chapterDetails,
     })
   };
