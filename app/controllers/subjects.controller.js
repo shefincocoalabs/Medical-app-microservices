@@ -16,7 +16,8 @@ function subjectController(methods, options) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var moment = require('moment');
   var videoConfig = config.videos;
-
+  var noteConfig = config.file;
+  
   // *** API for getting subject list ***
   this.listSubjects = (req, res) => {
     var findCriteria = {
@@ -284,7 +285,12 @@ function subjectController(methods, options) {
           error: err
         })
       })
- 
+    if(result.noteIds){
+      if(result.noteIds[0]){
+        let fullNotePath = noteConfig.imageBase + "" + result.noteIds[0].file;
+        result.noteIds[0].file = fullNotePath;
+      }
+    }
     let chapterId = result.chapterId._id;
     if(ids !== null ){
     let id = ids.purchasedChapterIds.find(element => element == chapterId+ "");
@@ -389,6 +395,7 @@ function subjectController(methods, options) {
     }
 
     res.send({
+      
       imageBase: videoConfig.imageBase,
       success: 1,
       message: 'video details listed successfully',
