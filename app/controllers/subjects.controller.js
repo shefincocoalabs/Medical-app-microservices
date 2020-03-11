@@ -222,6 +222,22 @@ function subjectController(methods, options) {
         })
       });
 
+      //find user bookmarked videos
+      let bookmarkWhereCondition = {
+        userId,
+        status: 1
+      }
+      let bookmarkVideoIds = [];
+      bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
+        videoId : 1
+      }).lean();
+
+      let isBookMarkedAvailable = true;
+      if(bookmarkVideoIds.length < 1){
+        isBookMarkedAvailable = false;
+      }
+
+
     var findCriteria = {
       _id: videoId,
       status: 1
@@ -304,6 +320,18 @@ function subjectController(methods, options) {
   }else{
     result.isPurchased = false;
   }
+  if(isBookMarkedAvailable){
+    let id = bookmarkVideoIds.find(element => element.videoId == videoId + "");
+    if(id){
+      result.isBookMarked = true;
+    }else{
+      result.isBookMarked = false;
+    }
+  }else{
+    result.isBookMarked = false;
+  }
+
+
     let subCategoryId = result.subCategoryId._id;
     let sortOrder = result.subCategoryId.sortOrder;
     let next = {};
@@ -355,6 +383,17 @@ function subjectController(methods, options) {
             item.isPurchased = false;
     
           }
+          if(isBookMarkedAvailable){
+            let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
+            if(id){
+              item.isBookMarked = true;
+            }else{
+            item.isBookMarked = false;
+            }
+          }else{
+            item.isBookMarked = false;
+          }
+
           next.videos.push(item);
         }));
     } else {
@@ -390,6 +429,17 @@ function subjectController(methods, options) {
             item.isPurchased = false;
     
           }
+          if(isBookMarkedAvailable){
+            let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
+            if(id){
+              item.isBookMarked = true;
+            }else{
+            item.isBookMarked = false;
+            }
+          }else{
+            item.isBookMarked = false;
+          }
+
           prev.videos.push(item);
         }));
     } else {
