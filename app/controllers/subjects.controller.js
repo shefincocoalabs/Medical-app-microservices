@@ -459,27 +459,41 @@ function subjectController(methods, options) {
       res.send(responseObj);
       return;
     }
-    const newBookmark = new Bookmark({
-      videoId: videoId,
+    Bookmark.find({
       userId: userId,
-      status: 1,
-      tsCreatedAt: Number(moment().unix()),
-      tsModifiedAt: null
-    });
-    newBookmark.save()
-      .then(data => {
-        var formattedData = {
-          success: 1,
-          message: "video bookmarked successfully"
-        };
-        res.send(formattedData);
-      }).catch(err => {
-        res.status(500).send({
-          success: 0,
-          status: 500,
-          message: err.message || "Some error occurred while bookmarking video"
+      videoId: videoId
+    }).then(response => {
+       if(response.length == 0) {
+        const newBookmark = new Bookmark({
+          videoId: videoId,
+          userId: userId,
+          status: 1,
+          tsCreatedAt: Number(moment().unix()),
+          tsModifiedAt: null
         });
-      });
+        newBookmark.save()
+          .then(data => {
+            var formattedData = {
+              success: 1,
+              message: "video bookmarked successfully"
+            };
+            res.send(formattedData);
+          }).catch(err => {
+            res.status(500).send({
+              success: 0,
+              status: 500,
+              message: err.message || "Some error occurred while bookmarking video"
+            });
+          });
+       }
+       else {
+         res.send({
+           success: 0,
+           message: 'User is already bookmarked this video'
+         })
+       }
+    })
+ 
   }
   // *** API for remove bookmark ***
   this.removeBookmark = (req, res) => {
