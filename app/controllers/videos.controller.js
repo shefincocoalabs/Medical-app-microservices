@@ -345,6 +345,7 @@ function videoController(methods, options) {
       success: 1,
       message: 'Home videos listed successfully',
       imageBase: videoConfig.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       popularVideos: popularVideosArray,
       recommended: subCategoryVideoArray
     }
