@@ -11,6 +11,7 @@ function accountsController(methods, options) {
   var Chapter = require('../models/chapter.model.js');
   var config = require('../../config/app.config.js');
   var wishlistConfig = config.wishList;
+  var videosConfig = config.videos;
   const paramsConfig = require('../../config/params.config');
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
@@ -405,6 +406,7 @@ function accountsController(methods, options) {
         var responseObj = {
           success: 1,
           message: 'Wish list listed successfully',
+          imageBase: videosConfig.thumbnailImageBase,
           items: result,
           page: page,
           perPage: perPage,
