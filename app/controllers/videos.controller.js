@@ -448,6 +448,7 @@ function videoController(methods, options) {
         success: 1,
         message: 'Home videos listed successfully',
         imageBase: videoConfig.imageBase,
+        thumbnailImageBase: videoConfig.thumbnailImageBase,
         subCategories: subCategoryVideoArray,
         summaryVideo : chapter.summaryVideo
       }
