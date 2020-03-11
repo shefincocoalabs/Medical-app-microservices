@@ -14,6 +14,7 @@ function videoController(methods, options) {
   var SubCategory = require('../models/subCategory.model');
   var VideoType = require('../models/videoType.model.js');
   var Chapter = require('../models/chapter.model');
+  var Bookmark = require('../models/bookmark.model');
 
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
@@ -67,7 +68,22 @@ function videoController(methods, options) {
     if (ids !== null) {
       purchasedChapterIds = ids.purchasedChapterIds;
     }
+ 
+    let bookmarkWhereCondition = {
+      userId,
+      status: 1
+    }
+    let bookmarkVideoIds = [];
+    bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
+      videoId : 1
+    }).lean();
 
+    let isBookMarkedAvailable = true;
+    if(bookmarkVideoIds.length < 1){
+      isBookMarkedAvailable = false;
+    }
+
+    // )
     Videos.find(filters, queryProjection, pageParams)
       .sort(sortOptions)
       .limit(perPage)
@@ -99,6 +115,18 @@ function videoController(methods, options) {
             } else {
               isPurchased = false;
             }
+
+            if(isBookMarkedAvailable){
+              let id = bookmarkVideoIds.find(element => element.videoId == videoList[i]._id + "");
+              if(id){
+                videoList[i].isBookMarked = true;
+              }else{
+                videoList[i].isBookMarked = false;
+              }
+            }else{
+              videoList[i].isBookMarked = false;
+            }
+
             videoList[i].isPurchased = isPurchased;
             items.push(videoList[i]);
           }
@@ -219,7 +247,16 @@ function videoController(methods, options) {
           error: err
         })
       });
+      let bookmarkWhereCondition = {
+        userId,
+        status: 1
+      }
+      let bookmarkVideoIds = [];
+      bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
+        videoId : 1
+      }).lean();
 
+  
     //list popular videos list
     let popularVideos = await Videos.find({
         status: 1
@@ -246,7 +283,10 @@ function videoController(methods, options) {
         })
       });
     let popularVideosArray = [];
-
+    let isBookMarkedAvailable = true;
+    if(bookmarkVideoIds.length < 1){
+      isBookMarkedAvailable = false;
+    }
     //set video purchsed or not
     await Promise.all(popularVideos.map(async (item) => {
       if (ids !== null) {
@@ -259,6 +299,16 @@ function videoController(methods, options) {
       } else {
         item.isPurchased = false;
 
+      }
+      if(isBookMarkedAvailable){
+        let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
+        if(id){
+          item.isBookMarked = true;
+        }else{
+        item.isBookMarked = false;
+        }
+      }else{
+        item.isBookMarked = false;
       }
       popularVideosArray.push(item);
     }));
@@ -336,6 +386,17 @@ function videoController(methods, options) {
         }else{
           videos[i].isPurchased = false;
         }
+        if(isBookMarkedAvailable){
+          let id = bookmarkVideoIds.find(element => element.videoId ==  videos[i]._id + "");
+          if(id){
+            videos[i].isBookMarked = true;
+          }else{
+            videos[i].isBookMarked = false;
+          }
+        }else{
+          videos[i].isBookMarked = false;
+        }
+
           item.videos.push(videos[i]);
         }
       }
@@ -372,6 +433,20 @@ function videoController(methods, options) {
           })
         });
  
+        let bookmarkWhereCondition = {
+          userId,
+          status: 1
+        }
+        let bookmarkVideoIds = [];
+        bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
+          videoId : 1
+        }).lean();
+
+        let isBookMarkedAvailable = true;
+        if(bookmarkVideoIds.length < 1){
+          isBookMarkedAvailable = false;
+        }
+  
       let subCategories = await SubCategory.find({
           status: 1,
           chapterId: params.chapterId.trim()
@@ -439,6 +514,18 @@ function videoController(methods, options) {
         for (let i = 0; i < videos.length; i++) {
           if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
             videos[i].isPurchased = isPurchased;
+         
+            if(isBookMarkedAvailable){
+              let id = bookmarkVideoIds.find(element => element.videoId ==  videos[i]._id + "");
+              if(id){
+                videos[i].isBookMarked = true;
+              }else{
+                videos[i].isBookMarked = false;
+              }
+            }else{
+              videos[i].isBookMarked = false;
+            }
+
             item.videos.push(videos[i]);
           }
         }
