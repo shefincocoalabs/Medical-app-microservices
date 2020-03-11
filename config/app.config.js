@@ -37,6 +37,7 @@ module.exports = {
   },
   videos: {
     imageBase: commonStorePath + '/videos/images/',
+    thumbnailImageBase: commonStorePath + '/images/books/categories/',
     resultsPerPage: 30
   }
 }
