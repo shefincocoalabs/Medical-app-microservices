@@ -450,6 +450,7 @@ function subjectController(methods, options) {
     res.send({
       
       imageBase: videoConfig.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       success: 1,
       message: 'video details listed successfully',
       items: result,
