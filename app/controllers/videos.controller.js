@@ -200,16 +200,19 @@ function videoController(methods, options) {
 
     let topRatedVideoSummary = {
       imageBase: topRatedVideos.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       totalItems: topRatedVideos.totalItems,
       items: topRatedVideos.items
     };
     let newlyUploadedVideosSummary = {
       imageBase: newlyUploadedVideos.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       totalItems: newlyUploadedVideos.totalItems,
       items: newlyUploadedVideos.items
     };
     let trainingVideosSummary = {
       imageBase: trainingVideos.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       totalItems: trainingVideos.totalItems,
       items: trainingVideos.items
     };
@@ -403,6 +406,7 @@ function videoController(methods, options) {
       success: 1,
       message: 'Home videos listed successfully',
       imageBase: videoConfig.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       popularVideos: popularVideosArray,
       recommended: subCategoryVideoArray
     }
@@ -531,6 +535,7 @@ function videoController(methods, options) {
         success: 1,
         message: 'Home videos listed successfully',
         imageBase: videoConfig.imageBase,
+        thumbnailImageBase: videoConfig.thumbnailImageBase,
         subCategories: subCategoryVideoArray,
         summaryVideo : chapter.summaryVideo
       }

@@ -11,6 +11,7 @@ function accountsController(methods, options) {
   var Chapter = require('../models/chapter.model.js');
   var config = require('../../config/app.config.js');
   var wishlistConfig = config.wishList;
+  var videosConfig = config.videos;
   const paramsConfig = require('../../config/params.config');
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
@@ -252,6 +253,7 @@ function accountsController(methods, options) {
           firstName: result.firstName,
           email: result.email,
           phone: result.phone,
+          image: '',
           deviceToken: deviceToken
         }
         var token = jwt.sign({
@@ -392,7 +394,10 @@ function accountsController(methods, options) {
     Bookmark.find(findCriteria, queryProjection, pageParams).populate({
       path: 'videoId',
       Video,
-      select: 'title video length description averageRating status'
+      match: {
+        status: 1
+      },
+      select: 'title video length description averageRating thumbnail status'
     }).limit(perPage).then(result => {
       Bookmark.countDocuments(findCriteria, function (err, itemsCount) {
         totalPages = itemsCount / perPage;
@@ -401,6 +406,7 @@ function accountsController(methods, options) {
         var responseObj = {
           success: 1,
           message: 'Wish list listed successfully',
+          imageBase: videosConfig.thumbnailImageBase,
           items: result,
           page: page,
           perPage: perPage,

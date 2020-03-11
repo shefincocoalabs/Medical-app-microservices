@@ -1,16 +1,17 @@
 var multer = require('multer');
+const path = require('path');
 var config = require('../../config/app.config.js');
 var feedsConfig = config.profile;
 console.log(feedsConfig.imageUploadPath);
+const DIR = path.join(__dirname, '../image-uploads');
 var Storage = multer.diskStorage({
     destination: function(req, file, callback) {
-        callback(null, feedsConfig.imageUploadPath);
+        callback(null, DIR);
     },
     filename: function(req, file, callback) {
         callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
     }
 });
-console.log(Storage)
 
 
 var upload = multer({
@@ -29,5 +30,5 @@ module.exports = (app,methods,options) => {
     accounts.methods.patch('/update-profile',accounts.updateProfile, {auth:true});
     accounts.methods.get('/wish-list',accounts.getWishList, {auth:true});
     accounts.methods.get('/my-courses',accounts.myCourses, {auth:true});
-    accounts.methods.post('/profile-upload',upload.fields([{ name: 'images', maxCount: feedsConfig.maxImageCount }]), accounts.uploadProfileImage);
+    accounts.methods.post('/profile-upload',upload.fields([{ name: 'images', maxCount: feedsConfig.maxImageCount }]), accounts.uploadProfileImage,{auth: false});
 }
