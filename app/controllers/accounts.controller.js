@@ -252,6 +252,7 @@ function accountsController(methods, options) {
           firstName: result.firstName,
           email: result.email,
           phone: result.phone,
+          image: '',
           deviceToken: deviceToken
         }
         var token = jwt.sign({
