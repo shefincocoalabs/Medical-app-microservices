@@ -322,7 +322,7 @@ function accountsController(methods, options) {
       }
       res.send({
         success: 1,
-        message: 'User details found',
+        message: 'User details fetched successfully',
         imageBase: profileConfig.imageBase,
         userDetails: result
       })

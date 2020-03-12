@@ -513,11 +513,12 @@ function subjectController(methods, options) {
       res.send(responseObj);
       return;
     }
+
     Bookmark.find({
       userId: userId,
       videoId: videoId
     }).then(response => {
-       if(response.length == 0) {
+       if(response.length == 0 || response.status == 0) { 
         const newBookmark = new Bookmark({
           videoId: videoId,
           userId: userId,
