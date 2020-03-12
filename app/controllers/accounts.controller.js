@@ -483,5 +483,19 @@ function accountsController(methods, options) {
       console.log("images is " + images);
     }
   }
+
+  this.getCommonDetails = (req,res) => {
+    let respObj = {};
+    respObj.aboutTheApp = "https://www.cocoalabs.in/";
+    respObj.privacyPolicy = "https://www.cocoalabs.in/";
+    respObj.termsOfService = "https://www.cocoalabs.in/";
+    respObj.helpAndFeedback = "https://www.cocoalabs.in/";
+    res.send({
+      success: 1,
+      message: 'Listed common details successfully',
+      items: respObj
+    })
+  }
+  
 }
 module.exports = accountsController

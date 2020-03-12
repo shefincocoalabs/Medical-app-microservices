@@ -31,4 +31,5 @@ module.exports = (app,methods,options) => {
     accounts.methods.get('/wish-list',accounts.getWishList, {auth:true});
     accounts.methods.get('/my-courses',accounts.myCourses, {auth:true});
     accounts.methods.post('/profile-upload',upload.fields([{ name: 'images', maxCount: feedsConfig.maxImageCount }]), accounts.uploadProfileImage,{auth: false});
+    accounts.methods.get('/common-details',accounts.getCommonDetails, {auth:true});
 }
