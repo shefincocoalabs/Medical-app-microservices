@@ -68,18 +68,18 @@ function videoController(methods, options) {
     if (ids !== null) {
       purchasedChapterIds = ids.purchasedChapterIds;
     }
- 
+
     let bookmarkWhereCondition = {
       userId,
       status: 1
     }
     let bookmarkVideoIds = [];
-    bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
-      videoId : 1
+    bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition, {
+      videoId: 1
     }).lean();
 
     let isBookMarkedAvailable = true;
-    if(bookmarkVideoIds.length < 1){
+    if (bookmarkVideoIds.length < 1) {
       isBookMarkedAvailable = false;
     }
 
@@ -116,14 +116,14 @@ function videoController(methods, options) {
               isPurchased = false;
             }
 
-            if(isBookMarkedAvailable){
+            if (isBookMarkedAvailable) {
               let id = bookmarkVideoIds.find(element => element.videoId == videoList[i]._id + "");
-              if(id){
+              if (id) {
                 videoList[i].isBookMarked = true;
-              }else{
+              } else {
                 videoList[i].isBookMarked = false;
               }
-            }else{
+            } else {
               videoList[i].isBookMarked = false;
             }
 
@@ -247,16 +247,16 @@ function videoController(methods, options) {
           error: err
         })
       });
-      let bookmarkWhereCondition = {
-        userId,
-        status: 1
-      }
-      let bookmarkVideoIds = [];
-      bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
-        videoId : 1
-      }).lean();
+    let bookmarkWhereCondition = {
+      userId,
+      status: 1
+    }
+    let bookmarkVideoIds = [];
+    bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition, {
+      videoId: 1
+    }).lean();
 
-  
+
     //list popular videos list
     let popularVideos = await Videos.find({
         status: 1
@@ -284,7 +284,7 @@ function videoController(methods, options) {
       });
     let popularVideosArray = [];
     let isBookMarkedAvailable = true;
-    if(bookmarkVideoIds.length < 1){
+    if (bookmarkVideoIds.length < 1) {
       isBookMarkedAvailable = false;
     }
     //set video purchsed or not
@@ -300,14 +300,14 @@ function videoController(methods, options) {
         item.isPurchased = false;
 
       }
-      if(isBookMarkedAvailable){
+      if (isBookMarkedAvailable) {
         let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
-        if(id){
+        if (id) {
           item.isBookMarked = true;
-        }else{
-        item.isBookMarked = false;
+        } else {
+          item.isBookMarked = false;
         }
-      }else{
+      } else {
         item.isBookMarked = false;
       }
       popularVideosArray.push(item);
@@ -329,7 +329,7 @@ function videoController(methods, options) {
     let subCategories = await SubCategory.find({
         status: 1
       }).limit(3).lean()
-    // }).skip(Math.random() * count).limit(3).lean()
+      // }).skip(Math.random() * count).limit(3).lean()
       .catch(err => {
         return res.send({
           success: 0,
@@ -377,25 +377,25 @@ function videoController(methods, options) {
         if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
           if (ids !== null) {
 
-          let id = ids.purchasedChapterIds.find(element => element == videos[i].chapterId + "");
-          if (id) {
-            videos[i].isPurchased = true;
+            let id = ids.purchasedChapterIds.find(element => element == videos[i].chapterId + "");
+            if (id) {
+              videos[i].isPurchased = true;
+            } else {
+              videos[i].isPurchased = false;
+            }
           } else {
             videos[i].isPurchased = false;
           }
-        }else{
-          videos[i].isPurchased = false;
-        }
-        if(isBookMarkedAvailable){
-          let id = bookmarkVideoIds.find(element => element.videoId ==  videos[i]._id + "");
-          if(id){
-            videos[i].isBookMarked = true;
-          }else{
+          if (isBookMarkedAvailable) {
+            let id = bookmarkVideoIds.find(element => element.videoId == videos[i]._id + "");
+            if (id) {
+              videos[i].isBookMarked = true;
+            } else {
+              videos[i].isBookMarked = false;
+            }
+          } else {
             videos[i].isBookMarked = false;
           }
-        }else{
-          videos[i].isBookMarked = false;
-        }
 
           item.videos.push(videos[i]);
         }
@@ -432,21 +432,21 @@ function videoController(methods, options) {
             error: err
           })
         });
- 
-        let bookmarkWhereCondition = {
-          userId,
-          status: 1
-        }
-        let bookmarkVideoIds = [];
-        bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
-          videoId : 1
-        }).lean();
 
-        let isBookMarkedAvailable = true;
-        if(bookmarkVideoIds.length < 1){
-          isBookMarkedAvailable = false;
-        }
-  
+      let bookmarkWhereCondition = {
+        userId,
+        status: 1
+      }
+      let bookmarkVideoIds = [];
+      bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition, {
+        videoId: 1
+      }).lean();
+
+      let isBookMarkedAvailable = true;
+      if (bookmarkVideoIds.length < 1) {
+        isBookMarkedAvailable = false;
+      }
+
       let subCategories = await SubCategory.find({
           status: 1,
           chapterId: params.chapterId.trim()
@@ -458,7 +458,7 @@ function videoController(methods, options) {
             error: err
           })
         });
-        let chapter = await Chapter.findOne({
+      let chapter = await Chapter.findOne({
           status: 1,
           _id: params.chapterId.trim()
         }).lean()
@@ -469,6 +469,13 @@ function videoController(methods, options) {
             error: err
           })
         });
+
+      let summaryVideo = {
+        summaryVideoId: chapter._id,
+        summaryVideo: chapter.summaryVideo,
+        summaryVideoTitle: chapter.summaryVideoTitle,
+        summaryVideoThumbnail: chapter.thumbnail
+      }
 
       let subIdArray = [];
 
@@ -514,15 +521,15 @@ function videoController(methods, options) {
         for (let i = 0; i < videos.length; i++) {
           if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
             videos[i].isPurchased = isPurchased;
-         
-            if(isBookMarkedAvailable){
-              let id = bookmarkVideoIds.find(element => element.videoId ==  videos[i]._id + "");
-              if(id){
+
+            if (isBookMarkedAvailable) {
+              let id = bookmarkVideoIds.find(element => element.videoId == videos[i]._id + "");
+              if (id) {
                 videos[i].isBookMarked = true;
-              }else{
+              } else {
                 videos[i].isBookMarked = false;
               }
-            }else{
+            } else {
               videos[i].isBookMarked = false;
             }
 
@@ -537,9 +544,7 @@ function videoController(methods, options) {
         imageBase: videoConfig.imageBase,
         thumbnailImageBase: videoConfig.thumbnailImageBase,
         subCategories: subCategoryVideoArray,
-        summaryVideo : chapter.summaryVideo,
-        summaryVideoTitle: chapter.summaryVideoTitle,
-        summaryVideoThumbnail: chapter.thumbnail
+        summaryVideo: summaryVideo
       }
       res.send(responseObj);
     }
