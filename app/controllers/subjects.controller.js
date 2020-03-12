@@ -472,7 +472,7 @@ function subjectController(methods, options) {
       videoId: videoId
     };
     var update = {
-      status: 1
+      rating: rating
     };
     if (!rating) {
       return res.send({
@@ -494,7 +494,8 @@ function subjectController(methods, options) {
     }
     VideoRatings.find({
       userId: userId,
-      videoId: videoId
+      videoId: videoId,
+      status: 1
     }).then(response => {
       if (response.length == 0) {
         const newRating = new VideoRatings({
