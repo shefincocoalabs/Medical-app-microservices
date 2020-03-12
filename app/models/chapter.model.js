@@ -12,6 +12,8 @@ const ChapterSchema = mongoose.Schema({
     gradientStartColorHex: String,
     gradientEndColorHex: String,
     userIdCreator: String,
+    summaryVideoTitle: String,
+    thumbnail: String,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number
