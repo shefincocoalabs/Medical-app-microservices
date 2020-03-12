@@ -537,7 +537,9 @@ function videoController(methods, options) {
         imageBase: videoConfig.imageBase,
         thumbnailImageBase: videoConfig.thumbnailImageBase,
         subCategories: subCategoryVideoArray,
-        summaryVideo : chapter.summaryVideo
+        summaryVideo : chapter.summaryVideo,
+        summaryVideoTitle: chapter.summaryVideoTitle,
+        summaryVideoThumbnail: chapter.thumbnail
       }
       res.send(responseObj);
     }
