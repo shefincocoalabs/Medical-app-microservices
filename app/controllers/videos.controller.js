@@ -549,5 +549,6 @@ function videoController(methods, options) {
       res.send(responseObj);
     }
   }
+
 }
 module.exports = videoController;

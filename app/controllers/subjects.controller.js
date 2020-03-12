@@ -461,7 +461,7 @@ function subjectController(methods, options) {
   }
 
   // *** API for submitting rating of a video ***
-  this.rateVideo = (req, res) => {
+  this.rateVideo = async (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
     var videoId = req.params.id;
@@ -474,6 +474,10 @@ function subjectController(methods, options) {
     var update = {
       rating: rating
     };
+    var i;
+    var totalRating = 0;
+    var averageRating;
+    var numberOfRatings;
     if (!rating) {
       return res.send({
         success: 0,
@@ -496,7 +500,7 @@ function subjectController(methods, options) {
       userId: userId,
       videoId: videoId,
       status: 1
-    }).then(response => {
+    }).then(async response => {
       if (response.length == 0) {
         const newRating = new VideoRatings({
           rating: rating,
@@ -507,7 +511,7 @@ function subjectController(methods, options) {
           tsModifiedAt: null
         });
         newRating.save()
-          .then(data => {
+          .then(async data => {
             var formattedData = {
               success: 1,
               message: "Rating submitted"
@@ -535,9 +539,23 @@ function subjectController(methods, options) {
           });
         });
       }
+
+      var videoRatings = await VideoRatings.find({
+        videoId: videoId
+      })
+      console.log(videoRatings);
+      numberOfRatings = videoRatings.length;
+      for (i = 0; i < numberOfRatings; i++) {
+        totalRating = totalRating + parseFloat(videoRatings[i].rating);
+      }
+      averageRating = totalRating / numberOfRatings;
+      console.log(averageRating);
+      var updateVideoRating = await Videos.update({
+        _id: videoId
+      }, {
+        averageRating: averageRating.toString()
+      })
     })
-
-
   }
 
   // *** API for bookmark a video ***
@@ -682,6 +700,26 @@ function subjectController(methods, options) {
           message: err.message || "Some error occurred while payment"
         });
       });
+  };
+
+  this.getRating = (req, res) => {
+    console.log('in rating');
+    var videoId = req.params.id;
+    var i;
+    var totalRating = 0;
+    var averageRating;
+    var numberOfRatings;
+    VideoRatings.find({
+      videoId: videoId
+    }).then(result => {
+      console.log(result);
+      numberOfRatings = result.length;
+      for (i = 0; i < result.length; i++) {
+        totalRating = totalRating + parseFloat(result[i].rating);
+      }
+      averageRating = totalRating / numberOfRatings;
+      console.log(averageRating);
+    })
   }
 
 }
