@@ -19,7 +19,7 @@ function subjectController(methods, options) {
   var authorConfig = config.author;
   var authorImageBase = authorConfig.imageBase;
   var noteConfig = config.file;
-  
+
   // *** API for getting subject list ***
   this.listSubjects = (req, res) => {
     var findCriteria = {
@@ -141,7 +141,7 @@ function subjectController(methods, options) {
         error: err
       })
     });
-    if(!chapter) {
+    if (!chapter) {
       return res.send({
         success: 0,
         message: 'Chapter details not found fo this Id'
@@ -181,7 +181,7 @@ function subjectController(methods, options) {
     // chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
-      
+
       message: 'Chapters details listed successfully',
       authorImageBase: authorImageBase,
       chapterBannerImageBase: chapterBannerImageBase,
@@ -223,20 +223,20 @@ function subjectController(methods, options) {
         })
       });
 
-      //find user bookmarked videos
-      let bookmarkWhereCondition = {
-        userId,
-        status: 1
-      }
-      let bookmarkVideoIds = [];
-      bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition,{
-        videoId : 1
-      }).lean();
+    //find user bookmarked videos
+    let bookmarkWhereCondition = {
+      userId,
+      status: 1
+    }
+    let bookmarkVideoIds = [];
+    bookmarkVideoIds = await Bookmark.find(bookmarkWhereCondition, {
+      videoId: 1
+    }).lean();
 
-      let isBookMarkedAvailable = true;
-      if(bookmarkVideoIds.length < 1){
-        isBookMarkedAvailable = false;
-      }
+    let isBookMarkedAvailable = true;
+    if (bookmarkVideoIds.length < 1) {
+      isBookMarkedAvailable = false;
+    }
 
 
     var findCriteria = {
@@ -304,33 +304,33 @@ function subjectController(methods, options) {
           error: err
         })
       })
-    if(result.noteIds){
-      if(result.noteIds[0]){
+    if (result.noteIds) {
+      if (result.noteIds[0]) {
         let fullNotePath = noteConfig.imageBase + "" + result.noteIds[0].file;
         result.noteIds[0].file = fullNotePath;
       }
     }
     let chapterId = result.chapterId._id;
-    if(ids !== null ){
-    let id = ids.purchasedChapterIds.find(element => element == chapterId+ "");
-    if(id){
-      result.isPurchased = true;
-    }else{
+    if (ids !== null) {
+      let id = ids.purchasedChapterIds.find(element => element == chapterId + "");
+      if (id) {
+        result.isPurchased = true;
+      } else {
+        result.isPurchased = false;
+      }
+    } else {
       result.isPurchased = false;
     }
-  }else{
-    result.isPurchased = false;
-  }
-  if(isBookMarkedAvailable){
-    let id = bookmarkVideoIds.find(element => element.videoId == videoId + "");
-    if(id){
-      result.isBookMarked = true;
-    }else{
+    if (isBookMarkedAvailable) {
+      let id = bookmarkVideoIds.find(element => element.videoId == videoId + "");
+      if (id) {
+        result.isBookMarked = true;
+      } else {
+        result.isBookMarked = false;
+      }
+    } else {
       result.isBookMarked = false;
     }
-  }else{
-    result.isBookMarked = false;
-  }
 
 
     let subCategoryId = result.subCategoryId._id;
@@ -371,32 +371,32 @@ function subjectController(methods, options) {
           },
           select: '_id name'
         }).lean()
-        next.videos = [];
-        await Promise.all(nextVideos.map(async (item) => {
-          if (ids !== null) {
-            let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
-            if (id) {
-              item.isPurchased = true;
-            } else {
-              item.isPurchased = false;
-            }
+      next.videos = [];
+      await Promise.all(nextVideos.map(async (item) => {
+        if (ids !== null) {
+          let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
+          if (id) {
+            item.isPurchased = true;
           } else {
             item.isPurchased = false;
-    
           }
-          if(isBookMarkedAvailable){
-            let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
-            if(id){
-              item.isBookMarked = true;
-            }else{
-            item.isBookMarked = false;
-            }
-          }else{
-            item.isBookMarked = false;
-          }
+        } else {
+          item.isPurchased = false;
 
-          next.videos.push(item);
-        }));
+        }
+        if (isBookMarkedAvailable) {
+          let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
+          if (id) {
+            item.isBookMarked = true;
+          } else {
+            item.isBookMarked = false;
+          }
+        } else {
+          item.isBookMarked = false;
+        }
+
+        next.videos.push(item);
+      }));
     } else {
       next = {};
     }
@@ -416,39 +416,39 @@ function subjectController(methods, options) {
           select: '_id name'
         }).lean()
 
-        prev.videos = [];
+      prev.videos = [];
 
-        await Promise.all(prevVideos.map(async (item) => {
-          if (ids !== null) {
-            let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
-            if (id) {
-              item.isPurchased = true;
-            } else {
-              item.isPurchased = false;
-            }
+      await Promise.all(prevVideos.map(async (item) => {
+        if (ids !== null) {
+          let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
+          if (id) {
+            item.isPurchased = true;
           } else {
             item.isPurchased = false;
-    
           }
-          if(isBookMarkedAvailable){
-            let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
-            if(id){
-              item.isBookMarked = true;
-            }else{
-            item.isBookMarked = false;
-            }
-          }else{
-            item.isBookMarked = false;
-          }
+        } else {
+          item.isPurchased = false;
 
-          prev.videos.push(item);
-        }));
+        }
+        if (isBookMarkedAvailable) {
+          let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
+          if (id) {
+            item.isBookMarked = true;
+          } else {
+            item.isBookMarked = false;
+          }
+        } else {
+          item.isBookMarked = false;
+        }
+
+        prev.videos.push(item);
+      }));
     } else {
       prev = {}
     }
 
     res.send({
-      
+
       imageBase: videoConfig.imageBase,
       thumbnailImageBase: videoConfig.thumbnailImageBase,
       success: 1,
@@ -464,34 +464,77 @@ function subjectController(methods, options) {
   this.rateVideo = (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
+    var videoId = req.params.videoId;
     var rating = req.body.rating;
+    var isValidId = ObjectId.isValid(videoId);
+    var findCriteria = {
+      userId: userId,
+      videoId: videoId
+    };
+    var update = {
+      status: 1
+    };
     if (!rating) {
       return res.send({
         success: 0,
         message: 'Rating cannot be empty'
       })
     }
-    const newRating = new VideoRatings({
-      rating: rating,
+    if (!isValidId) {
+      var responseObj = {
+        success: 0,
+        status: 401,
+        errors: [{
+          field: "id",
+          message: "id is invalid"
+        }]
+      }
+      res.send(responseObj);
+      return;
+    }
+    VideoRatings.find({
       userId: userId,
-      status: 1,
-      tsCreatedAt: Number(moment().unix()),
-      tsModifiedAt: null
-    });
-    newRating.save()
-      .then(data => {
-        var formattedData = {
-          success: 1,
-          message: "Rating submitted"
-        };
-        res.send(formattedData);
-      }).catch(err => {
-        res.status(500).send({
-          success: 0,
-          status: 500,
-          message: err.message || "Some error occurred while submitting rating."
+      videoId: videoId
+    }).then(response => {
+      if (response.length == 0) {
+        const newRating = new VideoRatings({
+          rating: rating,
+          userId: userId,
+          status: 1,
+          tsCreatedAt: Number(moment().unix()),
+          tsModifiedAt: null
         });
-      });
+        newRating.save()
+          .then(data => {
+            var formattedData = {
+              success: 1,
+              message: "Rating submitted"
+            };
+            res.send(formattedData);
+          }).catch(err => {
+            res.status(500).send({
+              success: 0,
+              status: 500,
+              message: err.message || "Some error occurred while submitting rating."
+            });
+          });
+      } else {
+        VideoRatings.update(findCriteria, update).then(result => {
+          var formattedData = {
+            success: 1,
+            message: "Rating submitted"
+          };
+          res.send(formattedData);
+        }).catch(err => {
+          res.status(500).send({
+            success: 0,
+            status: 500,
+            message: err.message || "Some error occurred while submitting rating."
+          });
+        });
+      }
+    })
+
 
   }
 
@@ -525,7 +568,7 @@ function subjectController(methods, options) {
       userId: userId,
       videoId: videoId
     }).then(response => {
-       if(response.length == 0 ) { 
+      if (response.length == 0) {
         const newBookmark = new Bookmark({
           videoId: videoId,
           userId: userId,
@@ -547,18 +590,17 @@ function subjectController(methods, options) {
               message: err.message || "Some error occurred while bookmarking video"
             });
           });
-       }
-       else {
-         Bookmark.update(findCriteria, update).then(result => {
+      } else {
+        Bookmark.update(findCriteria, update).then(result => {
           var formattedData = {
             success: 1,
             message: "video bookmarked successfully"
           };
           res.send(formattedData);
-         })
-       }
+        })
+      }
     })
- 
+
   }
   // *** API for remove bookmark ***
   this.removeBookmark = (req, res) => {
