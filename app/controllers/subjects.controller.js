@@ -501,6 +501,13 @@ function subjectController(methods, options) {
     var userData = req.identity.data;
     var userId = userData.id;
     var isValidId = ObjectId.isValid(videoId);
+    var findCriteria = {
+      userId: userId,
+      videoId: videoId
+    };
+    var update = {
+      status: 1
+    };
     if (!isValidId) {
       var responseObj = {
         success: 0,
@@ -518,7 +525,7 @@ function subjectController(methods, options) {
       userId: userId,
       videoId: videoId
     }).then(response => {
-       if(response.length == 0 || response.status == 0) { 
+       if(response.length == 0 ) { 
         const newBookmark = new Bookmark({
           videoId: videoId,
           userId: userId,
@@ -542,9 +549,12 @@ function subjectController(methods, options) {
           });
        }
        else {
-         res.send({
-           success: 0,
-           message: 'User is already bookmarked this video'
+         Bookmark.update(findCriteria, update).then(result => {
+          var formattedData = {
+            success: 1,
+            message: "video bookmarked successfully"
+          };
+          res.send(formattedData);
          })
        }
     })
