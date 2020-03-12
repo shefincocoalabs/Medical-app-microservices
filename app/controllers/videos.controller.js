@@ -289,6 +289,7 @@ function videoController(methods, options) {
     }
     //set video purchsed or not
     await Promise.all(popularVideos.map(async (item) => {
+      if(item.videoTypeId.name !== "Summary"){
       if (ids !== null) {
         let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
         if (id) {
@@ -310,7 +311,9 @@ function videoController(methods, options) {
       } else {
         item.isBookMarked = false;
       }
+
       popularVideosArray.push(item);
+    }
     }));
 
     //find count of subcategories
@@ -470,12 +473,7 @@ function videoController(methods, options) {
           })
         });
 
-      let summaryVideo = {
-        summaryVideoId: chapter._id,
-        summaryVideo: chapter.summaryVideo,
-        summaryVideoTitle: chapter.summaryVideoTitle,
-        summaryVideoThumbnail: chapter.thumbnail
-      }
+  
 
       let subIdArray = [];
 
@@ -491,7 +489,8 @@ function videoController(methods, options) {
           path: 'videoTypeId',
           VideoType,
           match: {
-            status: 1
+            status: 1,
+            // name: {$ne: 'Summary'}
           },
           select: '_id name'
         }).lean()
@@ -502,6 +501,24 @@ function videoController(methods, options) {
             error: err
           })
         });
+        let summary = await Videos.find({
+          status : 1,
+          chapterId : params.chapterId.trim(),
+        })
+        .populate({
+          path: 'videoTypeId',
+          VideoType,
+          match: {
+            status: 1,
+            // name : "Summary"
+          },
+          select: '_id name'
+        })
+        .lean()
+        // console.log("summary")
+        // console.log(summary)
+        // console.log("summary")
+
       if (ids !== null) {
         purchasedChapterIds = ids.purchasedChapterIds;
         let id = purchasedChapterIds.find(element => element == params.chapterId);
@@ -514,14 +531,29 @@ function videoController(methods, options) {
       } else {
         isPurchased = false;
       }
+      let summaryVideo  = await summary.find(element => element.videoTypeId.name == "Summary");
+      summaryVideo.isPurchased = isPurchased;
+
+      if (isBookMarkedAvailable) {
+        let id = bookmarkVideoIds.find(element => element.videoId == summaryVideo._id + "");
+        if (id) {
+          summaryVideo.isBookMarked = true;
+        } else {
+          summaryVideo.isBookMarked = false;
+        }
+      } else {
+        summaryVideo.isBookMarked = false;
+      }
+
       let subCategoryVideoArray = [];
       await Promise.all(subCategories.map(async (item) => {
         let subCategoryId = item._id;
         item.videos = [];
         for (let i = 0; i < videos.length; i++) {
+          // if(videos[i].videoTypeId.name !== 'Summary'){
           if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
             videos[i].isPurchased = isPurchased;
-
+            
             if (isBookMarkedAvailable) {
               let id = bookmarkVideoIds.find(element => element.videoId == videos[i]._id + "");
               if (id) {
@@ -535,6 +567,7 @@ function videoController(methods, options) {
 
             item.videos.push(videos[i]);
           }
+          // }
         }
         subCategoryVideoArray.push(item);
       }));
