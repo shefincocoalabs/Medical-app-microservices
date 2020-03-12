@@ -185,6 +185,7 @@ function subjectController(methods, options) {
       message: 'Chapters details listed successfully',
       authorImageBase: authorImageBase,
       chapterBannerImageBase: chapterBannerImageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       chapterDetails: chapterDetails,
     })
   };
@@ -449,6 +450,7 @@ function subjectController(methods, options) {
     res.send({
       
       imageBase: videoConfig.imageBase,
+      thumbnailImageBase: videoConfig.thumbnailImageBase,
       success: 1,
       message: 'video details listed successfully',
       items: result,
@@ -511,11 +513,12 @@ function subjectController(methods, options) {
       res.send(responseObj);
       return;
     }
+
     Bookmark.find({
       userId: userId,
       videoId: videoId
     }).then(response => {
-       if(response.length == 0) {
+       if(response.length == 0 || response.status == 0) { 
         const newBookmark = new Bookmark({
           videoId: videoId,
           userId: userId,
