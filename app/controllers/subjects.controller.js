@@ -501,6 +501,7 @@ function subjectController(methods, options) {
         const newRating = new VideoRatings({
           rating: rating,
           userId: userId,
+          videoId: videoId,
           status: 1,
           tsCreatedAt: Number(moment().unix()),
           tsModifiedAt: null
