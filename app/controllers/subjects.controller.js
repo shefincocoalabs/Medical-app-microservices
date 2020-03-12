@@ -464,7 +464,7 @@ function subjectController(methods, options) {
   this.rateVideo = (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
-    var videoId = req.params.videoId;
+    var videoId = req.params.id;
     var rating = req.body.rating;
     var isValidId = ObjectId.isValid(videoId);
     var findCriteria = {
