@@ -12,6 +12,7 @@ function accountsController(methods, options) {
   var config = require('../../config/app.config.js');
   var wishlistConfig = config.wishList;
   var videosConfig = config.videos;
+  var profileConfig = config.profile;
   const paramsConfig = require('../../config/params.config');
   const JWT_KEY = paramsConfig.development.jwt.secret;
   var otpConfig = config.otp;
@@ -284,6 +285,7 @@ function accountsController(methods, options) {
             return res.send({
               success: 1,
               message: 'Otp verified successfully',
+              imageBase: profileConfig.imageBase,
               userDetails: payload,
               token: token
             })
@@ -321,6 +323,7 @@ function accountsController(methods, options) {
       res.send({
         success: 1,
         message: 'User details found',
+        imageBase: profileConfig.imageBase,
         userDetails: result
       })
 
