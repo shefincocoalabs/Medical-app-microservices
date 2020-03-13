@@ -552,7 +552,7 @@ function videoController(methods, options) {
         summaryVideo.isBookMarked = false;
       }
     }else{
-      summaryVideo = {};
+      summaryVideo = null;
     }
 
       let subCategoryVideoArray = [];

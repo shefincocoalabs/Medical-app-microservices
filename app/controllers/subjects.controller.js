@@ -407,7 +407,7 @@ function subjectController(methods, options) {
         next.videos.push(item);
       }));
     } else {
-      next = {};
+      next = null;
     }
 
     if (prev != null) {
@@ -453,7 +453,7 @@ function subjectController(methods, options) {
         prev.videos.push(item);
       }));
     } else {
-      prev = {}
+      prev = null
     }
 
     res.send({
