@@ -160,7 +160,8 @@ function videoController(methods, options) {
     let topRequestObj = {
       page: 1,
       perPage: 10,
-      bearer
+      bearer,
+      sortBy: "averageRating"
     }
     let topVideos = await getVideos(topRequestObj)
       .catch(err => {
