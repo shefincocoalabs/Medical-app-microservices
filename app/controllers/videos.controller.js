@@ -142,10 +142,11 @@ function videoController(methods, options) {
             perPage: perPage,
             hasNextPage: hasNextPage,
             totalItems: itemsCount,
-            totalPages: totalPages
+            totalPages: totalPages 
           }
 
           res.send(responseObj);
+
         })
       })
   };
@@ -531,7 +532,9 @@ function videoController(methods, options) {
       } else {
         isPurchased = false;
       }
-      let summaryVideo  = await summary.find(element => element.videoTypeId.name == "Summary");
+      let summaryVideo  =  summary.find(element => element.videoTypeId.name == "Summary");
+   
+      if(summaryVideo){
       summaryVideo.isPurchased = isPurchased;
 
       if (isBookMarkedAvailable) {
@@ -544,6 +547,9 @@ function videoController(methods, options) {
       } else {
         summaryVideo.isBookMarked = false;
       }
+    }else{
+      summaryVideo = {};
+    }
 
       let subCategoryVideoArray = [];
       await Promise.all(subCategories.map(async (item) => {
