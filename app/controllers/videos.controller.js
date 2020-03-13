@@ -606,7 +606,8 @@ function videoController(methods, options) {
        title: 1,
        averageRating: 1,
        length: 1,
-       video: 1
+       video: 1,
+       thumbnail: 1
      };
      Videos.find(findCriteria,queryProjection).then(result => {
        if(!result) {
@@ -618,6 +619,8 @@ function videoController(methods, options) {
        res.send({
          success: 1,
          message: 'Videos listed successfully',
+         videoBase: videoConfig.imageBase,
+         thumbnailImageBase: videoConfig.thumbnailImageBase, 
          items: result
        })
      })
