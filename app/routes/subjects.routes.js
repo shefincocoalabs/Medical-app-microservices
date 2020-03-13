@@ -10,6 +10,5 @@ module.exports = (app,methods,options) => {
     subject.methods.delete('/list-chapters/chapter-video-details/boomark-video/remove/:id',subject.removeBookmark, {auth:true});
     subject.methods.get('/list-chapters/chapter-details/buy-chapter/:id',subject.buyChapters, {auth:true});
     subject.methods.post('/payment',subject.payment, {auth:true});
-    subject.methods.get('/get-rating/:id',subject.getRating, {auth:true});
 
 }    

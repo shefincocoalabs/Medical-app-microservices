@@ -700,25 +700,5 @@ function subjectController(methods, options) {
       });
   };
 
-  this.getRating = (req, res) => {
-    console.log('in rating');
-    var videoId = req.params.id;
-    var i;
-    var totalRating = 0;
-    var averageRating;
-    var numberOfRatings;
-    VideoRatings.find({
-      videoId: videoId
-    }).then(result => {
-      console.log(result);
-      numberOfRatings = result.length;
-      for (i = 0; i < result.length; i++) {
-        totalRating = totalRating + parseFloat(result[i].rating);
-      }
-      averageRating = totalRating / numberOfRatings;
-      console.log(averageRating);
-    })
-  }
-
 }
 module.exports = subjectController
