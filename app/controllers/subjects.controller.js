@@ -543,13 +543,11 @@ function subjectController(methods, options) {
       var videoRatings = await VideoRatings.find({
         videoId: videoId
       })
-      console.log(videoRatings);
       numberOfRatings = videoRatings.length;
       for (i = 0; i < numberOfRatings; i++) {
         totalRating = totalRating + parseFloat(videoRatings[i].rating);
       }
       averageRating = totalRating / numberOfRatings;
-      console.log(averageRating);
       var updateVideoRating = await Videos.update({
         _id: videoId
       }, {

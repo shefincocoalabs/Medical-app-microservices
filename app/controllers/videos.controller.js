@@ -15,7 +15,7 @@ function videoController(methods, options) {
   var VideoType = require('../models/videoType.model.js');
   var Chapter = require('../models/chapter.model');
   var Bookmark = require('../models/bookmark.model');
-
+  var ObjectId = require('mongoose').Types.ObjectId;
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
 
@@ -548,6 +548,46 @@ function videoController(methods, options) {
       }
       res.send(responseObj);
     }
+  };
+
+  this.nextVideos = (req,res) => {
+     var chapterId = req.params.chapterId;
+     var isValidId = ObjectId.isValid(chapterId);
+     if (!isValidId) {
+      var responseObj = {
+        success: 0,
+        status: 401,
+        errors: [{
+          field: "id",
+          message: "id is invalid"
+        }]
+      }
+      res.send(responseObj);
+      return;
+    }
+     var findCriteria = {
+       chapterId: chapterId
+     };
+     var queryProjection = {
+       _id: 1,
+       title: 1,
+       averageRating: 1,
+       length: 1,
+       video: 1
+     };
+     Videos.find(findCriteria,queryProjection).then(result => {
+       if(!result) {
+         return res.send({
+           success: 0,
+           message: 'No videos found'
+         })
+       }
+       res.send({
+         success: 1,
+         message: 'Videos listed successfully',
+         items: result
+       })
+     })
   }
 
 }
