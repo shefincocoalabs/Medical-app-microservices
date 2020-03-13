@@ -333,10 +333,11 @@ function subjectController(methods, options) {
     }
 
 
-    let subCategoryId = result.subCategoryId._id;
-    let sortOrder = result.subCategoryId.sortOrder;
+    // let subCategoryId = result.subCategoryId._id;
     let next = {};
     let prev = {};
+    if(result.videoTypeId.name !== "Summary"){
+    let sortOrder = result.subCategoryId.sortOrder;
 
     next = await SubCategories.findOne({
       sortOrder: {
@@ -356,7 +357,15 @@ function subjectController(methods, options) {
     }).sort({
       sortOrder: 1
     }).limit(1).lean()
-
+  }else{
+    next = null;
+     prev =  await SubCategories.findOne({
+      chapterId,
+      status: 1
+    }).sort({
+      sortOrder: -1
+    }).limit(1).lean()
+  }
     if (next != null) {
       let nextVideos = await Videos.find({
           chapterId,
@@ -404,7 +413,7 @@ function subjectController(methods, options) {
     if (prev != null) {
       let prevVideos = await Videos.find({
           chapterId,
-          subCategoryId: next._id,
+          subCategoryId: prev._id,
           status: 1
         })
         .populate({
