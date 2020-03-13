@@ -109,6 +109,8 @@ function videoController(methods, options) {
           var items = [];
           var itemsCountCurrentPage = videoList.length;
           for (i = 0; i < itemsCountCurrentPage; i++) {
+            if(videoList[i].videoTypeId.name !== 'Summary'){
+
             let chapterId = purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
             if (chapterId) {
               isPurchased = true;
@@ -129,6 +131,7 @@ function videoController(methods, options) {
 
             videoList[i].isPurchased = isPurchased;
             items.push(videoList[i]);
+          }
           }
           totalPages = itemsCount / perPage;
           totalPages = Math.ceil(totalPages);
