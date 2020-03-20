@@ -4,6 +4,7 @@ async function getVideos(reqObj) {
   let bearer = reqObj.bearer;
   delete reqObj.bearer;
   let videos = await gateway.getWithAuth('/videos', reqObj, bearer);
+
   return videos;
 };
 
@@ -18,7 +19,7 @@ function videoController(methods, options) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
-
+ 
     let userData = req.identity.data;
     let userId = userData.id;
     let purchasedChapterIds = [];
@@ -105,6 +106,7 @@ function videoController(methods, options) {
       .lean()
       .then(videoList => {
         Videos.countDocuments(filters, function (err, itemsCount) {
+    
           var i = 0;
           var items = [];
           var itemsCountCurrentPage = videoList.length;
@@ -156,7 +158,7 @@ function videoController(methods, options) {
   this.getSummary = async (req, res) => {
     var summary = {};
     let bearer = req.headers['authorization'];
-
+    console.log("inside getSummary")
     let topRequestObj = {
       page: 1,
       perPage: 10,
@@ -171,7 +173,9 @@ function videoController(methods, options) {
           error: err
         })
       });
+   
     let topRatedVideos = JSON.parse(topVideos)
+   
     let newUploadRequestObj = {
       page: 1,
       perPage: 10,
