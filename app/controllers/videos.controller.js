@@ -180,7 +180,7 @@ function videoController(methods, options) {
       page: 1,
       perPage: 10,
       bearer,
-      sortOrder: "asc",
+      sortOrder: "desc",
       sortBy: "time"
     }
     let newUploadedVideos = await getVideos(newUploadRequestObj)
