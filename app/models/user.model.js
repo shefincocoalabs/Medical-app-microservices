@@ -13,6 +13,7 @@ const UserSchema = mongoose.Schema({
     acceptTerms: Boolean,
     deviceToken: String,
     purchasedChapterIds: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject',default:null}],
+    is_blocked: Number,
     status: Number,
     tsCreatedAt: Number,
     tsModifiedAt: Number

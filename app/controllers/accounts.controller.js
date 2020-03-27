@@ -21,7 +21,7 @@ function accountsController(methods, options) {
   var jwt = require('jsonwebtoken');
 
   // ** API for signup and send OTP **
-  this.register = async(req, res) => {
+  this.register = async (req, res) => {
     var firstName = req.body.firstName;
     var email = req.body.email;
     var phone = req.body.phone;
@@ -67,62 +67,62 @@ function accountsController(methods, options) {
       phone: phone
     }
     let result = await User.findOne(findCriteria)
-      if (result) {
-        return res.send({
-          success: 0,
-          message: 'Phone number is already registered. Try with a different one'
-        })
-      }
-      const newRegistration = new User({
-        firstName: firstName,
-        email: email,
-        phone: phone,
-        // collegeId: collegeId,
-        acceptTerms: acceptTerms,
-        deviceToken: '',
-        status: 1,
-        tsCreatedAt: Number(moment().unix()),
-        tsModifiedAt: null
-      });
-      newRegistration.save()
-        .then(data => {
-          const newOtp = new Otp({
-            phone: phone,
-            isUsed: false,
-            userToken: otp,
-            apiToken: apiToken,
-            expiry: expiry
-          });
-          newOtp.save()
-            .then(data => {
-              var otpGenerateResponse = {
-                phone: data.phone,
-                userToken: data.userToken,
-                apiToken: data.apiToken,
-                isRegistered: 1
-              }
-              res.send({
-                success: 1,
-                message: 'New user is registered successfully and otp is sent to your registered number for verification',
-                otpGenerateResponse: otpGenerateResponse
-              });
-            }).catch(err => {
-              res.status(200).send({
-                success: 0,
-                errors: [{
-                  field: "phone",
-                  message: err.message || "Some error occurred while generating otp"
-                }],
-                code: 200
-              });
-            });
-        }).catch(err => {
-          res.status(200).send({
-            success: 0,
-            errors: err,
-            code: 200
-          });
+    if (result) {
+      return res.send({
+        success: 0,
+        message: 'Phone number is already registered. Try with a different one'
+      })
+    }
+    const newRegistration = new User({
+      firstName: firstName,
+      email: email,
+      phone: phone,
+      // collegeId: collegeId,
+      acceptTerms: acceptTerms,
+      deviceToken: '',
+      status: 1,
+      tsCreatedAt: Number(moment().unix()),
+      tsModifiedAt: null
+    });
+    newRegistration.save()
+      .then(data => {
+        const newOtp = new Otp({
+          phone: phone,
+          isUsed: false,
+          userToken: otp,
+          apiToken: apiToken,
+          expiry: expiry
         });
+        newOtp.save()
+          .then(data => {
+            var otpGenerateResponse = {
+              phone: data.phone,
+              userToken: data.userToken,
+              apiToken: data.apiToken,
+              isRegistered: 1
+            }
+            res.send({
+              success: 1,
+              message: 'New user is registered successfully and otp is sent to your registered number for verification',
+              otpGenerateResponse: otpGenerateResponse
+            });
+          }).catch(err => {
+            res.status(200).send({
+              success: 0,
+              errors: [{
+                field: "phone",
+                message: err.message || "Some error occurred while generating otp"
+              }],
+              code: 200
+            });
+          });
+      }).catch(err => {
+        res.status(200).send({
+          success: 0,
+          errors: err,
+          code: 200
+        });
+      });
   }
 
   // *** Send OTP ***
@@ -146,6 +146,14 @@ function accountsController(methods, options) {
           success: 0,
           message: 'Phone number is not registered'
         })
+      };
+      if (result.is_blocked) {
+        if (result.is_blocked == 1) {
+          return res.send({
+            success: 0,
+            message: 'This phone number is blocked by admin panel, Please contact them for more details'
+          })
+        }
       }
       const newOtp = new Otp({
         phone: phone,
@@ -229,16 +237,16 @@ function accountsController(methods, options) {
     var otpData = await Otp.findOne(findCriteria);
 
     if (otpData) {
-    let currentTime = Date.now();
+      let currentTime = Date.now();
 
-    var otpData1 = await Otp.findOne({
-      userToken: otp,
-      apiToken: apiToken,
-      isUsed: false,
-      expiry : {
-        $gt: currentTime
-      }
-    });
+      var otpData1 = await Otp.findOne({
+        userToken: otp,
+        apiToken: apiToken,
+        isUsed: false,
+        expiry: {
+          $gt: currentTime
+        }
+      });
       if (otpData1 === null) {
         return res.send({
           success: 0,
@@ -436,7 +444,7 @@ function accountsController(methods, options) {
     let items = [];
     let userDetails = await User.findOne(findCriteria);
     purchasedChapterIds = userDetails.purchasedChapterIds;
-    if(purchasedChapterIds.length == 0) {
+    if (purchasedChapterIds.length == 0) {
       return res.send({
         success: 0,
         message: 'User is not purchased any chapter'
@@ -466,7 +474,7 @@ function accountsController(methods, options) {
     })
   };
 
-  this.uploadProfileImage = (req,res) => {
+  this.uploadProfileImage = (req, res) => {
     console.log('hihihi')
     console.log(req.files);
     var files = req.files;
@@ -484,7 +492,7 @@ function accountsController(methods, options) {
     }
   }
 
-  this.getCommonDetails = (req,res) => {
+  this.getCommonDetails = (req, res) => {
     let respObj = {};
     respObj.aboutTheApp = "https://www.cocoalabs.in/";
     respObj.privacyPolicy = "https://www.cocoalabs.in/";
@@ -496,6 +504,6 @@ function accountsController(methods, options) {
       items: respObj
     })
   }
-  
+
 }
 module.exports = accountsController

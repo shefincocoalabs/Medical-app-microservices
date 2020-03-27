@@ -181,7 +181,6 @@ function subjectController(methods, options) {
     // chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
-
       message: 'Chapters details listed successfully',
       authorImageBase: authorImageBase,
       chapterBannerImageBase: chapterBannerImageBase,
