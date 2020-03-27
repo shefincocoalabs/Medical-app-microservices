@@ -4,6 +4,7 @@ async function getVideos(reqObj) {
   let bearer = reqObj.bearer;
   delete reqObj.bearer;
   let videos = await gateway.getWithAuth('/videos', reqObj, bearer);
+
   return videos;
 };
 
@@ -18,7 +19,7 @@ function videoController(methods, options) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
-
+ 
     let userData = req.identity.data;
     let userId = userData.id;
     let purchasedChapterIds = [];
@@ -105,10 +106,13 @@ function videoController(methods, options) {
       .lean()
       .then(videoList => {
         Videos.countDocuments(filters, function (err, itemsCount) {
+    
           var i = 0;
           var items = [];
           var itemsCountCurrentPage = videoList.length;
           for (i = 0; i < itemsCountCurrentPage; i++) {
+            if(videoList[i].videoTypeId.name !== 'Summary'){
+
             let chapterId = purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
             if (chapterId) {
               isPurchased = true;
@@ -129,6 +133,7 @@ function videoController(methods, options) {
 
             videoList[i].isPurchased = isPurchased;
             items.push(videoList[i]);
+          }
           }
           totalPages = itemsCount / perPage;
           totalPages = Math.ceil(totalPages);
@@ -153,11 +158,12 @@ function videoController(methods, options) {
   this.getSummary = async (req, res) => {
     var summary = {};
     let bearer = req.headers['authorization'];
-
+    console.log("inside getSummary")
     let topRequestObj = {
       page: 1,
       perPage: 10,
-      bearer
+      bearer,
+      sortBy: "averageRating"
     }
     let topVideos = await getVideos(topRequestObj)
       .catch(err => {
@@ -167,12 +173,14 @@ function videoController(methods, options) {
           error: err
         })
       });
+   
     let topRatedVideos = JSON.parse(topVideos)
+   
     let newUploadRequestObj = {
       page: 1,
       perPage: 10,
       bearer,
-      sortOrder: "asc",
+      sortOrder: "desc",
       sortBy: "time"
     }
     let newUploadedVideos = await getVideos(newUploadRequestObj)
@@ -548,7 +556,7 @@ function videoController(methods, options) {
         summaryVideo.isBookMarked = false;
       }
     }else{
-      summaryVideo = {};
+      summaryVideo = null;
     }
 
       let subCategoryVideoArray = [];
