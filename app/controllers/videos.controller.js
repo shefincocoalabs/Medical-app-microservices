@@ -19,7 +19,7 @@ function videoController(methods, options) {
   var ObjectId = require('mongoose').Types.ObjectId;
   var videoConfig = config.videos;
   this.listVideos = async (req, res) => {
- 
+
     let userData = req.identity.data;
     let userId = userData.id;
     let purchasedChapterIds = [];
@@ -68,6 +68,11 @@ function videoController(methods, options) {
     })
     if (ids !== null) {
       purchasedChapterIds = ids.purchasedChapterIds;
+    } else {
+      return res.send({
+        success: 0,
+        message: 'User has not purchased any chapter'
+      })
     }
 
     let bookmarkWhereCondition = {
@@ -106,34 +111,34 @@ function videoController(methods, options) {
       .lean()
       .then(videoList => {
         Videos.countDocuments(filters, function (err, itemsCount) {
-    
+
           var i = 0;
           var items = [];
           var itemsCountCurrentPage = videoList.length;
           for (i = 0; i < itemsCountCurrentPage; i++) {
-            if(videoList[i].videoTypeId.name !== 'Summary'){
+            if (videoList[i].videoTypeId.name !== 'Summary') {
 
-            let chapterId = purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
-            if (chapterId) {
-              isPurchased = true;
-            } else {
-              isPurchased = false;
-            }
+              let chapterId = purchasedChapterIds.find(element => element == videoList[i].chapterId + "");
+              if (chapterId) {
+                isPurchased = true;
+              } else {
+                isPurchased = false;
+              }
 
-            if (isBookMarkedAvailable) {
-              let id = bookmarkVideoIds.find(element => element.videoId == videoList[i]._id + "");
-              if (id) {
-                videoList[i].isBookMarked = true;
+              if (isBookMarkedAvailable) {
+                let id = bookmarkVideoIds.find(element => element.videoId == videoList[i]._id + "");
+                if (id) {
+                  videoList[i].isBookMarked = true;
+                } else {
+                  videoList[i].isBookMarked = false;
+                }
               } else {
                 videoList[i].isBookMarked = false;
               }
-            } else {
-              videoList[i].isBookMarked = false;
-            }
 
-            videoList[i].isPurchased = isPurchased;
-            items.push(videoList[i]);
-          }
+              videoList[i].isPurchased = isPurchased;
+              items.push(videoList[i]);
+            }
           }
           totalPages = itemsCount / perPage;
           totalPages = Math.ceil(totalPages);
@@ -147,7 +152,7 @@ function videoController(methods, options) {
             perPage: perPage,
             hasNextPage: hasNextPage,
             totalItems: itemsCount,
-            totalPages: totalPages 
+            totalPages: totalPages
           }
 
           res.send(responseObj);
@@ -173,9 +178,9 @@ function videoController(methods, options) {
           error: err
         })
       });
-   
+
     let topRatedVideos = JSON.parse(topVideos)
-   
+
     let newUploadRequestObj = {
       page: 1,
       perPage: 10,
@@ -298,31 +303,31 @@ function videoController(methods, options) {
     }
     //set video purchsed or not
     await Promise.all(popularVideos.map(async (item) => {
-      if(item.videoTypeId.name !== "Summary"){
-      if (ids !== null) {
-        let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
-        if (id) {
-          item.isPurchased = true;
+      if (item.videoTypeId.name !== "Summary") {
+        if (ids !== null) {
+          let id = ids.purchasedChapterIds.find(element => element == item.chapterId + "");
+          if (id) {
+            item.isPurchased = true;
+          } else {
+            item.isPurchased = false;
+          }
         } else {
           item.isPurchased = false;
-        }
-      } else {
-        item.isPurchased = false;
 
-      }
-      if (isBookMarkedAvailable) {
-        let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
-        if (id) {
-          item.isBookMarked = true;
+        }
+        if (isBookMarkedAvailable) {
+          let id = bookmarkVideoIds.find(element => element.videoId == item._id + "");
+          if (id) {
+            item.isBookMarked = true;
+          } else {
+            item.isBookMarked = false;
+          }
         } else {
           item.isBookMarked = false;
         }
-      } else {
-        item.isBookMarked = false;
-      }
 
-      popularVideosArray.push(item);
-    }
+        popularVideosArray.push(item);
+      }
     }));
 
     //find count of subcategories
@@ -482,7 +487,7 @@ function videoController(methods, options) {
           })
         });
 
-  
+
 
       let subIdArray = [];
 
@@ -510,9 +515,9 @@ function videoController(methods, options) {
             error: err
           })
         });
-        let summary = await Videos.find({
-          status : 1,
-          chapterId : params.chapterId.trim(),
+      let summary = await Videos.find({
+          status: 1,
+          chapterId: params.chapterId.trim(),
         })
         .populate({
           path: 'videoTypeId',
@@ -524,9 +529,9 @@ function videoController(methods, options) {
           select: '_id name'
         })
         .lean()
-        // console.log("summary")
-        // console.log(summary)
-        // console.log("summary")
+      // console.log("summary")
+      // console.log(summary)
+      // console.log("summary")
 
       if (ids !== null) {
         purchasedChapterIds = ids.purchasedChapterIds;
@@ -540,24 +545,24 @@ function videoController(methods, options) {
       } else {
         isPurchased = false;
       }
-      let summaryVideo  =  summary.find(element => element.videoTypeId.name == "Summary");
-   
-      if(summaryVideo){
-      summaryVideo.isPurchased = isPurchased;
+      let summaryVideo = summary.find(element => element.videoTypeId.name == "Summary");
 
-      if (isBookMarkedAvailable) {
-        let id = bookmarkVideoIds.find(element => element.videoId == summaryVideo._id + "");
-        if (id) {
-          summaryVideo.isBookMarked = true;
+      if (summaryVideo) {
+        summaryVideo.isPurchased = isPurchased;
+
+        if (isBookMarkedAvailable) {
+          let id = bookmarkVideoIds.find(element => element.videoId == summaryVideo._id + "");
+          if (id) {
+            summaryVideo.isBookMarked = true;
+          } else {
+            summaryVideo.isBookMarked = false;
+          }
         } else {
           summaryVideo.isBookMarked = false;
         }
       } else {
-        summaryVideo.isBookMarked = false;
+        summaryVideo = null;
       }
-    }else{
-      summaryVideo = null;
-    }
 
       let subCategoryVideoArray = [];
       await Promise.all(subCategories.map(async (item) => {
@@ -567,7 +572,7 @@ function videoController(methods, options) {
           // if(videos[i].videoTypeId.name !== 'Summary'){
           if (JSON.stringify(subCategoryId) === JSON.stringify(videos[i].subCategoryId)) {
             videos[i].isPurchased = isPurchased;
-            
+
             if (isBookMarkedAvailable) {
               let id = bookmarkVideoIds.find(element => element.videoId == videos[i]._id + "");
               if (id) {
@@ -597,10 +602,10 @@ function videoController(methods, options) {
     }
   };
 
-  this.nextVideos = (req,res) => {
-     var chapterId = req.params.chapterId;
-     var isValidId = ObjectId.isValid(chapterId);
-     if (!isValidId) {
+  this.nextVideos = (req, res) => {
+    var chapterId = req.params.chapterId;
+    var isValidId = ObjectId.isValid(chapterId);
+    if (!isValidId) {
       var responseObj = {
         success: 0,
         status: 401,
@@ -612,32 +617,32 @@ function videoController(methods, options) {
       res.send(responseObj);
       return;
     }
-     var findCriteria = {
-       chapterId: chapterId
-     };
-     var queryProjection = {
-       _id: 1,
-       title: 1,
-       averageRating: 1,
-       length: 1,
-       video: 1,
-       thumbnail: 1
-     };
-     Videos.find(findCriteria,queryProjection).then(result => {
-       if(!result) {
-         return res.send({
-           success: 0,
-           message: 'No videos found'
-         })
-       }
-       res.send({
-         success: 1,
-         message: 'Videos listed successfully',
-         videoBase: videoConfig.imageBase,
-         thumbnailImageBase: videoConfig.thumbnailImageBase, 
-         items: result
-       })
-     })
+    var findCriteria = {
+      chapterId: chapterId
+    };
+    var queryProjection = {
+      _id: 1,
+      title: 1,
+      averageRating: 1,
+      length: 1,
+      video: 1,
+      thumbnail: 1
+    };
+    Videos.find(findCriteria, queryProjection).then(result => {
+      if (!result) {
+        return res.send({
+          success: 0,
+          message: 'No videos found'
+        })
+      }
+      res.send({
+        success: 1,
+        message: 'Videos listed successfully',
+        videoBase: videoConfig.imageBase,
+        thumbnailImageBase: videoConfig.thumbnailImageBase,
+        items: result
+      })
+    })
   }
 
 }
