@@ -78,6 +78,7 @@ function accountsController(methods, options) {
       email: email,
       phone: phone,
       // collegeId: collegeId,
+      is_blocked: 0,
       acceptTerms: acceptTerms,
       deviceToken: '',
       status: 1,
