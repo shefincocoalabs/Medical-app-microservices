@@ -337,7 +337,9 @@ function subjectController(methods, options) {
     let prev = {};
     if(result.videoTypeId.name !== "Summary"){
     let sortOrder = result.subCategoryId.sortOrder;
-    sortOrder = parseInt(sortOrder);
+    console.log('sortOrer');
+    console.log(sortOrder);
+    console.log('sortOrer');
 
     next = await SubCategories.findOne({
       sortOrder: {
