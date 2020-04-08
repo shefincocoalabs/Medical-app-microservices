@@ -335,6 +335,7 @@ function subjectController(methods, options) {
     // let subCategoryId = result.subCategoryId._id;
     let next = {};
     let prev = {};
+    console.log(result);
     if(result.videoTypeId.name !== "Summary"){
     let sortOrder = result.subCategoryId.sortOrder;
     console.log('sortOrer');
