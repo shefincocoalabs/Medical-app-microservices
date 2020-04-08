@@ -338,9 +338,6 @@ function subjectController(methods, options) {
     console.log(result);
     if(result.videoTypeId.name !== "Summary"){
     let sortOrder = result.subCategoryId.sortOrder;
-    console.log('sortOrer');
-    console.log(sortOrder);
-    console.log('sortOrer');
 
     next = await SubCategories.findOne({
       sortOrder: {
@@ -361,6 +358,7 @@ function subjectController(methods, options) {
       sortOrder: 1
     }).limit(1).lean()
   }else{
+    console.log('else');
     next = null;
      prev =  await SubCategories.findOne({
       chapterId,
@@ -368,6 +366,7 @@ function subjectController(methods, options) {
     }).sort({
       sortOrder: -1
     }).limit(1).lean()
+    console.log(prev);
   }
     if (next != null) {
       let nextVideos = await Videos.find({
