@@ -446,9 +446,10 @@ function accountsController(methods, options) {
     let response;
     let items = [];
     let userDetails = await User.findOne(findCriteria);
-    purchasedChapterIds = userDetails.purchasedChapterIds;
     console.log('purchasedChapterIds');
-    console.log(purchasedChapterIds);
+    console.log(userDetails.purchasedChapterIds);
+    purchasedChapterIds = userDetails.purchasedChapterIds;
+    
     if (purchasedChapterIds.length == 0) {
       return res.send({
         success: 0,
