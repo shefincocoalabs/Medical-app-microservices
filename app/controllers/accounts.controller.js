@@ -64,7 +64,8 @@ function accountsController(methods, options) {
     var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
 
     var findCriteria = {
-      phone: phone
+      phone: phone,
+      status: 1
     }
     let result = await User.findOne(findCriteria)
     if (result) {
