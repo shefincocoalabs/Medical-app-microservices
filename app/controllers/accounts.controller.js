@@ -147,7 +147,7 @@ function accountsController(methods, options) {
       if (!result) {
         return res.send({
           success: 0,
-          message: 'No User found'
+          message: 'Please signup to continue'
         })
       };
       if (result.is_blocked) {
