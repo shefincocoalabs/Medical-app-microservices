@@ -447,7 +447,7 @@ function accountsController(methods, options) {
     let items = [];
     let userDetails = await User.findOne(findCriteria);
     console.log('purchasedChapterIds');
-    console.log(userDetails.purchasedChapterIds);
+    console.log(userDetails);
     purchasedChapterIds = userDetails.purchasedChapterIds;
     
     if (purchasedChapterIds.length == 0) {
