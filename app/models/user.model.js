@@ -12,7 +12,7 @@ const UserSchema = mongoose.Schema({
     collegeId: { type: mongoose.Schema.Types.ObjectId, ref: 'College'},
     acceptTerms: Boolean,
     deviceToken: String,
-    purchasedChapterIds: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject',default:null}],
+    purchasedChapterIds: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}],
     is_blocked: Number,
     status: Number,
     tsCreatedAt: Number,
