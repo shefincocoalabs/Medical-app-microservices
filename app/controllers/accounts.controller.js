@@ -139,13 +139,14 @@ function accountsController(methods, options) {
       })
     }
     var findCriteria = {
-      phone: phone
+      phone: phone,
+      status: 1
     }
     User.findOne(findCriteria).then(result => {
       if (!result) {
         return res.send({
           success: 0,
-          message: 'Phone number is not registered'
+          message: 'No User found'
         })
       };
       if (result.is_blocked) {
