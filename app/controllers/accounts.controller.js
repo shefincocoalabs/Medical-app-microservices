@@ -458,10 +458,12 @@ function accountsController(methods, options) {
     }
     await Promise.all(purchasedChapterIds.map(async (item) => {
       purchasedChapterId = item;
+      console.log(purchasedChapterId);
       let result = await Chapter.findOne({
         _id: purchasedChapterId,
         status: 1
       });
+      console.log(result);
       let videosCount = await Video.countDocuments({
         chapterId: purchasedChapterId,
         status: 1
