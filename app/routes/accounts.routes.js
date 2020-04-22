@@ -1,35 +1,30 @@
+const auth = require('../middleware/auth.js');
 var multer = require('multer');
-const path = require('path');
+var crypto = require('crypto');
+var mime = require('mime-types');
 var config = require('../../config/app.config.js');
-var feedsConfig = config.profile;
-console.log(feedsConfig.imageUploadPath);
-const DIR = path.join(__dirname, '../image-uploads');
-var Storage = multer.diskStorage({
-    destination: function(req, file, callback) {
-        callback(null, DIR);
-    },
-    filename: function(req, file, callback) {
-        callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+
+var storage = multer.diskStorage({
+    destination: 'uploads/',
+    filename: function (req, file, cb) {
+        crypto.pseudoRandomBytes(16, function (err, raw) {
+            if (err) return cb(err)
+
+            cb(null, raw.toString('hex') + "." + mime.extension(file.mimetype))
+        })
     }
 });
-
-
-var upload = multer({
-    storage: Storage
-});
-
-
-
-
-module.exports = (app,methods,options) => {
-    const accounts = methods.loadController('accounts',options);
-    accounts.methods.post('/sign-up',accounts.register, {auth:false});
-    accounts.methods.post('/send-otp',accounts.otpLogin, {auth:false});
-    accounts.methods.post('/validate-otp',accounts.validateOtp, {auth:false});
-    accounts.methods.get('/get-profile',accounts.getProfile, {auth:true});
-    accounts.methods.patch('/update-profile',accounts.updateProfile, {auth:true});
-    accounts.methods.get('/wish-list',accounts.getWishList, {auth:true});
-    accounts.methods.get('/my-courses',accounts.myCourses, {auth:true});
-    accounts.methods.post('/profile-upload',upload.fields([{ name: 'images', maxCount: feedsConfig.maxImageCount }]), accounts.uploadProfileImage,{auth: false});
-    accounts.methods.get('/common-details',accounts.getCommonDetails, {auth:true});
-}
+var userImageUpload = multer({ storage: storage });
+module.exports = (app) => {
+    const accounts = require('../controllers/accounts.controller.js');
+    app.post('/accounts/sign-up', accounts.register);
+    app.post('/accounts/send-otp', accounts.otpLogin);
+    app.post('/accounts/validate-otp', accounts.validateOtp);
+    app.get('/accounts/get-profile',auth, accounts.getProfile);
+    app.patch('/accounts/update-profile',auth, userImageUpload.single('image'), accounts.updateProfile);
+    app.get('/accounts/wish-list',auth, accounts.getWishList);
+    app.get('/accounts/my-courses',auth, accounts.myCourses);
+    app.get('/accounts/profile-upload',auth, accounts.uploadProfileImage);
+    app.get('/accounts/common-details',auth, accounts.getCommonDetails);
+    
+};

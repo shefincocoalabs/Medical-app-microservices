@@ -1,9 +1,10 @@
-module.exports = (app,methods,options) => {
-    const video = methods.loadController('videos',options);
-    video.methods.get('/',video.listVideos, {auth:true});
-    video.methods.get('/summary',video.getSummary, {auth:true});
-    video.methods.get('/home',video.getHomeVideo, {auth:true});
-    video.methods.get('/chapter/:chapterId',video.getChapterVideo, {auth:true});
-    video.methods.get('/next-videos/:chapterId',video.nextVideos, {auth:true});
+const auth = require('../middleware/auth.js');
+module.exports = (app) => {
+    const video = require('../controllers/videos.controller.js');
+    app.get('/videos',auth, video.listVideos);
+    app.get('/videos/summary',auth, video.getSummary);
+    app.get('/videos/home',auth, video.getHomeVideo);
+    app.get('/videos/chapter/:chapterId',auth, video.getChapterVideo);
+    app.get('/videos//next-videos/:chapterId',auth, video.nextVideos);
+};
 
-}

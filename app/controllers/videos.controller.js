@@ -8,7 +8,6 @@ async function getVideos(reqObj) {
   return videos;
 };
 
-function videoController(methods, options) {
   var Videos = require('../models/videos.model.js');
   var Users = require('../models/user.model');
   var config = require('../../config/app.config.js');
@@ -18,7 +17,8 @@ function videoController(methods, options) {
   var Bookmark = require('../models/bookmark.model');
   var ObjectId = require('mongoose').Types.ObjectId;
   var videoConfig = config.videos;
-  this.listVideos = async (req, res) => {
+
+  exports.listVideos = async (req, res) => {
 
     let userData = req.identity.data;
     let userId = userData.id;
@@ -160,7 +160,7 @@ function videoController(methods, options) {
         })
       })
   };
-  this.getSummary = async (req, res) => {
+  exports.getSummary = async (req, res) => {
     var summary = {};
     let bearer = req.headers['authorization'];
     console.log("inside getSummary")
@@ -243,7 +243,7 @@ function videoController(methods, options) {
 
   }
 
-  this.getHomeVideo = async (req, res) => {
+  exports.getHomeVideo = async (req, res) => {
     let userData = req.identity.data;
     let userId = userData.id;
     let whereCondition = {
@@ -430,7 +430,7 @@ function videoController(methods, options) {
     res.send(responseObj);
 
   }
-  this.getChapterVideo = async (req, res) => {
+  exports.getChapterVideo = async (req, res) => {
     let params = req.params;
     let userData = req.identity.data;
     let userId = userData.id;
@@ -602,7 +602,7 @@ function videoController(methods, options) {
     }
   };
 
-  this.nextVideos = (req, res) => {
+  exports.nextVideos = (req, res) => {
     var chapterId = req.params.chapterId;
     var isValidId = ObjectId.isValid(chapterId);
     if (!isValidId) {
@@ -645,5 +645,4 @@ function videoController(methods, options) {
     })
   }
 
-}
-module.exports = videoController;
+

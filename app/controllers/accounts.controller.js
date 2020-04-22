@@ -2,8 +2,6 @@ function sendOtp() {
   var otp = Math.floor(1000 + Math.random() * 9000);
   return otp
 }
-
-function accountsController(methods, options) {
   var User = require('../models/user.model.js');
   var Otp = require('../models/otp.model.js');
   var Bookmark = require('../models/bookmark.model.js');
@@ -21,7 +19,7 @@ function accountsController(methods, options) {
   var jwt = require('jsonwebtoken');
 
   // ** API for signup and send OTP **
-  this.register = async (req, res) => {
+  exports.register = async (req, res) => {
     var firstName = req.body.firstName;
     var email = req.body.email;
     var phone = req.body.phone;
@@ -78,6 +76,7 @@ function accountsController(methods, options) {
       firstName: firstName,
       email: email,
       phone: phone,
+      image: '',
       // collegeId: collegeId,
       is_blocked: 0,
       acceptTerms: acceptTerms,
@@ -128,7 +127,7 @@ function accountsController(methods, options) {
   }
 
   // *** Send OTP ***
-  this.otpLogin = (req, res) => {
+  exports.otpLogin = (req, res) => {
     var expiry = Date.now() + (otpConfig.expirySeconds * 1000);
     var params = req.body;
     var phone = params.phone;
@@ -193,7 +192,7 @@ function accountsController(methods, options) {
   }
 
   // *** API for validating OTP ***
-  this.validateOtp = async (req, res) => {
+  exports.validateOtp = async (req, res) => {
     var params = req.body;
     var otp = params.otp;
     var phone = params.phone;
@@ -312,7 +311,7 @@ function accountsController(methods, options) {
     }
   }
   // *** API for getting profile details ***
-  this.getProfile = (req, res) => {
+  exports.getProfile = (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
     var findCriteria = {
@@ -342,12 +341,12 @@ function accountsController(methods, options) {
   };
 
   // *** API for update profile ***
-  this.updateProfile = (req, res) => {
+  exports.updateProfile = (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
     var params = req.body;
     var profileImage = req.file;
-    if (!params.firstName && !params.email && !params.phone) {
+    if (!params.firstName && !params.email && !params.phone && !profileImage) {
       return res.send({
         success: 0,
         message: 'Nothing to update'
@@ -362,6 +361,9 @@ function accountsController(methods, options) {
     };
     if (params.phone) {
       update.phone = params.phone
+    };
+    if(profileImage) {
+      update.image = profileImage.filename
     };
     var filter = {
       _id: userId
@@ -384,7 +386,7 @@ function accountsController(methods, options) {
   };
 
   // *** API for getting wish list for the user ***
-  this.getWishList = (req, res) => {
+  exports.getWishList = (req, res) => {
     var params = req.query;
     var page = params.page || 1;
     page = page > 0 ? page : 1;
@@ -434,7 +436,7 @@ function accountsController(methods, options) {
 
   };
   // *** API for listing purchaced chapters under my courses ***
-  this.myCourses = async (req, res) => {
+  exports.myCourses = async (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
     var findCriteria = {
@@ -482,7 +484,7 @@ function accountsController(methods, options) {
     })
   };
 
-  this.uploadProfileImage = (req, res) => {
+  exports.uploadProfileImage = (req, res) => {
     console.log('hihihi')
     console.log(req.files);
     var files = req.files;
@@ -500,7 +502,7 @@ function accountsController(methods, options) {
     }
   }
 
-  this.getCommonDetails = (req, res) => {
+  exports.getCommonDetails = (req, res) => {
     let respObj = {};
     respObj.aboutTheApp = "https://www.cocoalabs.in/";
     respObj.privacyPolicy = "https://www.cocoalabs.in/";
@@ -513,5 +515,4 @@ function accountsController(methods, options) {
     })
   }
 
-}
-module.exports = accountsController
+

@@ -1,9 +1,12 @@
-function contactController(methods, options) {
+
   var Contact = require('../models/contact.model.js');
   var Pages = require('../models/page.model.js');
   var moment = require('moment');
+
   // *** API for submitting contact us ***
-  this.saveContact = (req, res) => {
+  exports.saveContact = (req, res) => {
+    var userData = req.identity.data;
+    var userId = userData.id;
     var params = req.body;
     var name = params.name;
     var email = params.email;
@@ -34,6 +37,7 @@ function contactController(methods, options) {
       });
     }
     const newContact = new Contact({
+      user: userId,
       name: name,
       email: email,
       message: message,
@@ -57,7 +61,7 @@ function contactController(methods, options) {
       });
   };
 
-  this.getContact = (req, res) => {
+  exports.getContact = (req, res) => {
     var queryProjection = {
       email: 1,
       phone: 1,
@@ -82,5 +86,4 @@ function contactController(methods, options) {
       })
     })
   }
-}
-module.exports = contactController
+

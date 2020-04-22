@@ -1,4 +1,3 @@
-function subjectController(methods, options) {
   var subjects = require('../models/subject.model.js');
   var chapters = require('../models/chapter.model.js');
   var Authors = require('../models/author.model.js');
@@ -21,7 +20,7 @@ function subjectController(methods, options) {
   var noteConfig = config.file;
 
   // *** API for getting subject list ***
-  this.listSubjects = (req, res) => {
+  exports.listSubjects = (req, res) => {
     var findCriteria = {
       status: 1
     };
@@ -48,7 +47,7 @@ function subjectController(methods, options) {
   }
 
   // *** API for listing chapters under a particular subject ***
-  this.listChapters = (req, res) => {
+  exports.listChapters = (req, res) => {
     var subjectId = req.params.id;
     var isValidId = ObjectId.isValid(subjectId);
     if (!isValidId) {
@@ -94,7 +93,7 @@ function subjectController(methods, options) {
   }
 
   // *** API for getting chapter details ***
-  this.chapterDetail = async (req, res) => {
+  exports.chapterDetail = async (req, res) => {
     var chapterId = req.params.id;
     var isValidId = ObjectId.isValid(chapterId);
     if (!isValidId) {
@@ -189,7 +188,7 @@ function subjectController(methods, options) {
     })
   };
   // *** API for getting video detail of a chapter ***
-  this.chapterVideoDetail = async (req, res) => {
+  exports.chapterVideoDetail = async (req, res) => {
     var videoId = req.params.id;
     var isValidId = ObjectId.isValid(videoId);
     if (!isValidId) {
@@ -472,7 +471,7 @@ function subjectController(methods, options) {
   }
 
   // *** API for submitting rating of a video ***
-  this.rateVideo = async (req, res) => {
+  exports.rateVideo = async (req, res) => {
     var userData = req.identity.data;
     var userId = userData.id;
     var videoId = req.params.id;
@@ -568,7 +567,7 @@ function subjectController(methods, options) {
   }
 
   // *** API for bookmark a video ***
-  this.bookmarkVideo = (req, res) => {
+  exports.bookmarkVideo = (req, res) => {
     var videoId = req.params.id;
     var userData = req.identity.data;
     var userId = userData.id;
@@ -632,7 +631,7 @@ function subjectController(methods, options) {
 
   }
   // *** API for remove bookmark ***
-  this.removeBookmark = (req, res) => {
+  exports.removeBookmark = (req, res) => {
     var videoId = req.params.id;
     var userData = req.identity.data;
     var userId = userData.id;
@@ -652,7 +651,7 @@ function subjectController(methods, options) {
   };
 
   // *** API for getting order summary for buying a chapter ***
-  this.buyChapters = (req, res) => {
+  exports.buyChapters = (req, res) => {
     var chapterId = req.params.id;
     var findCriteria = {
       chapterId: chapterId,
@@ -681,7 +680,7 @@ function subjectController(methods, options) {
   }
   // *** API for payment status update ***
 
-  this.payment = (req, res) => {
+  exports.payment = (req, res) => {
     let userData = req.identity.data;
     let userId = userData.id;
     let paymentData = {
@@ -711,5 +710,4 @@ function subjectController(methods, options) {
       });
   };
 
-}
-module.exports = subjectController
+
