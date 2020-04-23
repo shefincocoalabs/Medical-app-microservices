@@ -3,6 +3,7 @@ var multer = require('multer');
 var crypto = require('crypto');
 var mime = require('mime-types');
 var config = require('../../config/app.config.js');
+const path = require('path');
 
 var storage = multer.diskStorage({
     destination: 'uploads/',
@@ -15,6 +16,9 @@ var storage = multer.diskStorage({
     }
 });
 var userImageUpload = multer({ storage: storage });
+console.log('path');
+console.log(__dirname);
+console.log(path.resolve(__dirname, ".","uploads"));
 module.exports = (app) => {
     const accounts = require('../controllers/accounts.controller.js');
     app.post('/accounts/sign-up', accounts.register);
