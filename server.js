@@ -23,7 +23,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(express.static(__dirname, 'uploads'));
 app.use(bodyParser.json());
 module.exports = {
   connectToDb: function (callback) {

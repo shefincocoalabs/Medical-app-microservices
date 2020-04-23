@@ -16,9 +16,9 @@ var storage = multer.diskStorage({
     }
 });
 var userImageUpload = multer({ storage: storage });
-// console.log('path');
-// console.log(__dirname);
-// console.log(path.resolve(__dirname, ".","uploads"));
+console.log('path');
+console.log(__dirname);
+console.log(path.resolve(__dirname, ".","uploads"));
 module.exports = (app) => {
     const accounts = require('../controllers/accounts.controller.js');
     app.post('/accounts/sign-up', accounts.register);
