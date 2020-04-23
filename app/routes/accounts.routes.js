@@ -6,19 +6,15 @@ var config = require('../../config/app.config.js');
 const path = require('path');
 
 var storage = multer.diskStorage({
-    destination: 'uploads/',
+    destination: '/var/www/html/learning/common/uplods/images/books/categories/',
     filename: function (req, file, cb) {
         crypto.pseudoRandomBytes(16, function (err, raw) {
             if (err) return cb(err)
-
             cb(null, raw.toString('hex') + "." + mime.extension(file.mimetype))
         })
     }
 });
 var userImageUpload = multer({ storage: storage });
-console.log('path');
-console.log(__dirname);
-console.log(path.resolve(__dirname, ".","uploads"));
 module.exports = (app) => {
     const accounts = require('../controllers/accounts.controller.js');
     app.post('/accounts/sign-up', accounts.register);
