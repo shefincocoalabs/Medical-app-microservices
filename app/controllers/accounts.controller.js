@@ -322,6 +322,7 @@ function sendOtp() {
       firstName: 1,
       email: 1,
       phone: 1,
+      image: 1
     };
     User.findOne(findCriteria, queryProjection).then(result => {
       if (!result) {

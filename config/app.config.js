@@ -14,8 +14,8 @@ module.exports = {
   },
   profile: {
     maxImageCount: 10,
-    imageBase: commonStorePath + '/profile/',
-    imageUploadPath: commonStorePath + '/profile/'
+    imageBase: commonStorePath + '/user-images/',
+    imageUploadPath: '/var/www/html/learning/common/uploads/user-images/'
   },
   file: {
     imageBase: commonStorePath + '/files/'
