@@ -1,7 +1,6 @@
 const auth = require('../middleware/auth.js');
 module.exports = (app) => {
     const subject = require('../controllers/subjects.controller.js');
-    app.get('/subjects/checking',auth, subject.check);
     app.get('/subjects/list-subjects',auth, subject.listSubjects);
     app.get('/subjects/list-chapters/:id',auth, subject.listChapters);
     app.get('/subjects/list-chapters/chapter-details/:id',auth, subject.chapterDetail);
