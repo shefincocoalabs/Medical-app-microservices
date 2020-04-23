@@ -22,7 +22,8 @@ app.use(cors());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
   extended: true
-}))
+}));
+app.use(express.static('uploads'))
 app.use(bodyParser.json());
 module.exports = {
   connectToDb: function (callback) {

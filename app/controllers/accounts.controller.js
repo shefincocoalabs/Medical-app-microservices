@@ -267,16 +267,12 @@ function sendOtp() {
           image: '',
           deviceToken: deviceToken
         };
-        console.log('payload');
-        console.log(payload);
         var token = jwt.sign({
           data: payload,
           // exp: Math.floor(Date.now() / 1000) + JWT_EXPIRY_SECONDS
         }, JWT_KEY, {
           expiresIn: '30 days'
         });
-        console.log('token');
-        console.log(token);
         var filter = {
           userToken: otp,
           apiToken: apiToken
