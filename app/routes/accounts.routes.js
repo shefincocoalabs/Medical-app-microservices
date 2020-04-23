@@ -6,8 +6,7 @@ var config = require('../../config/app.config.js');
 const path = require('path');
 
 var storage = multer.diskStorage({
-    destination: '/var/www/html/learning/common/uploads/images/books/categories/',
-    // destination: 'http://172.104.61.150/learning/common/uploads/images/books/categories/',
+    destination: '/var/www/html/learning/common/uploads/user-images/',
     filename: function (req, file, cb) {
         crypto.pseudoRandomBytes(16, function (err, raw) {
             if (err) return cb(err)
