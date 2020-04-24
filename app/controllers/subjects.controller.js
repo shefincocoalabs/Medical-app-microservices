@@ -683,6 +683,11 @@
   exports.payment = async (req, res) => {
     let userData = req.identity.data;
     let userId = userData.id;
+    let transactionId = req.body.transactionId;
+    let amount = req.body.amount;
+    let paidStatus = req.body.paidStatus;
+    let paidOn = req.body.paidOn;
+    let chapterId = req.body.chapterId;
     if (!transactionId || !amount || !paidStatus || !paidOn || !chapterId) {
       var errors = [];
       if (!transactionId) {
@@ -720,13 +725,12 @@
         errors: errors,
       });
     }
-    let chapterId = req.body.chapterId;
     let paymentData = {
       userId,
-      transactionId: req.body.transactionId,
-      amount: req.body.amount,
-      paidStatus: req.body.paidStatus,
-      paidOn: req.body.paidOn,
+      transactionId: transactionId,
+      amount: amount,
+      paidStatus: paidStatus,
+      paidOn: paidOn,
       status: 1,
       tsCreatedAt: Number(moment().unix()),
       tsModifiedAt: null
