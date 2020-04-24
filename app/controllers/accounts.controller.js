@@ -375,6 +375,8 @@ function sendOtp() {
     }).then(result => {
       res.send({
         success: 1,
+        imageBase: profileConfig.imageBase,
+        image: result.image,
         message: 'User data updated successfully'
       })
     }).catch(err => {
