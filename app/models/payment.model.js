@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const PaymentSchema = mongoose.Schema({
-    userId: String,
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     transactionId: String,
     amount: String,
     paidStatus: String,
