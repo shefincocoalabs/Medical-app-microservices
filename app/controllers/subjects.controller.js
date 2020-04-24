@@ -683,6 +683,43 @@
   exports.payment = async (req, res) => {
     let userData = req.identity.data;
     let userId = userData.id;
+    if (!transactionId || !amount || !paidStatus || !paidOn || !chapterId) {
+      var errors = [];
+      if (!transactionId) {
+        errors.push({
+          field: "transactionId",
+          message: "transactionId cannot be empty"
+        });
+      }
+      if (!amount) {
+        errors.push({
+          field: "amount",
+          message: "amount cannot be empty"
+        });
+      }
+      if (!paidStatus) {
+        errors.push({
+          field: "paidStatus",
+          message: "paidStatus cannot be empty"
+        });
+      }
+      if (!paidOn) {
+        errors.push({
+          field: "paidOn",
+          message: "paidOn cannot be empty"
+        });
+      }
+      if (!chapterId) {
+        errors.push({
+          field: "chapterId",
+          message: "chapterId cannot be empty"
+        });
+      }
+      return res.send({
+        success: 0,
+        errors: errors,
+      });
+    }
     let chapterId = req.body.chapterId;
     let paymentData = {
       userId,
