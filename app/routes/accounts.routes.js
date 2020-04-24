@@ -9,10 +9,7 @@ const path = require('path');
 var storage = multer.diskStorage({
     destination: profilePath.imageUploadPath,
     filename: function (req, file, cb) {
-        crypto.pseudoRandomBytes(16, function (err, raw) {
-            if (err) return cb(err)
-            cb(null, raw.toString('hex') + "." + mime.extension(file.mimetype))
-        })
+        cb(null, file.fieldname + '-' + Date.now())
     }
 });
 var userImageUpload = multer({ storage: storage });

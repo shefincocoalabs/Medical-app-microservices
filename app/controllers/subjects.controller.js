@@ -335,38 +335,38 @@
     let next = {};
     let prev = {};
     console.log(result);
-    if(result.videoTypeId.name !== "Summary"){
-    let sortOrder = result.subCategoryId.sortOrder;
+    if (result.videoTypeId.name !== "Summary") {
+      let sortOrder = result.subCategoryId.sortOrder;
 
-    next = await SubCategories.findOne({
-      sortOrder: {
-        $gt: sortOrder
-      },
-      chapterId,
-      status: 1
-    }).sort({
-      sortOrder: 1
-    }).limit(1).lean()
-    prev = await SubCategories.findOne({
-      sortOrder: {
-        $lt: sortOrder
-      },
-      chapterId,
-      status: 1
-    }).sort({
-      sortOrder: 1
-    }).limit(1).lean()
-  }else{
-    console.log('else');
-    next = null;
-     prev =  await SubCategories.findOne({
-      chapterId,
-      status: 1
-    }).sort({
-      sortOrder: -1
-    }).limit(1).lean()
-    console.log(prev);
-  }
+      next = await SubCategories.findOne({
+        sortOrder: {
+          $gt: sortOrder
+        },
+        chapterId,
+        status: 1
+      }).sort({
+        sortOrder: 1
+      }).limit(1).lean()
+      prev = await SubCategories.findOne({
+        sortOrder: {
+          $lt: sortOrder
+        },
+        chapterId,
+        status: 1
+      }).sort({
+        sortOrder: 1
+      }).limit(1).lean()
+    } else {
+      console.log('else');
+      next = null;
+      prev = await SubCategories.findOne({
+        chapterId,
+        status: 1
+      }).sort({
+        sortOrder: -1
+      }).limit(1).lean()
+      console.log(prev);
+    }
     if (next != null) {
       let nextVideos = await Videos.find({
           chapterId,
@@ -680,9 +680,10 @@
   }
   // *** API for payment status update ***
 
-  exports.payment = (req, res) => {
+  exports.payment = async (req, res) => {
     let userData = req.identity.data;
     let userId = userData.id;
+    let chapterId = req.body.chapterId;
     let paymentData = {
       userId,
       transactionId: req.body.transactionId,
@@ -694,20 +695,24 @@
       tsModifiedAt: null
     }
     const newPayment = new Payment(paymentData);
-    newPayment.save()
-      .then(data => {
-        var paymentResponse = {
-          success: 1,
-          message: "Payment status submitted successfully"
-        };
-        res.send(paymentResponse);
-      }).catch(err => {
-        res.status(500).send({
-          success: 0,
-          status: 500,
-          message: err.message || "Some error occurred while payment"
-        });
+    try {
+      let savePayement = await newPayment.save();
+      let updatePurchasedChapters = await Users.update({
+        _id: userId
+      }, {
+        $push: {
+          purchasedChapterIds: chapterId
+        }
       });
+      var paymentResponse = {
+        success: 1,
+        message: "Payment status submitted successfully"
+      };
+      res.send(paymentResponse);
+    } catch (err) {
+      res.send({
+        success: 0,
+        message: err.message
+      });
+    }
   };
-
-
