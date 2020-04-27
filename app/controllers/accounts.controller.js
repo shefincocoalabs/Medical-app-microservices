@@ -509,11 +509,15 @@ exports.getCommonDetails = async (req, res) => {
       seoTitle: 'terms-of-service',
       status: 1
     }, queryProjection);
+    let helpAndFeedback = await HelpsAndFeedBack.find({
+      status: 1
+    });
     res.send({
       success: 1,
       aboutTheApp: aboutTheApp,
       privacyPolicy: privacyPolicy,
       termsOfService: termsOfService,
+      helpAndFeedback: helpAndFeedback,
       message: 'data listed successfully'
     })
   } catch (err) {
