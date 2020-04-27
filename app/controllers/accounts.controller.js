@@ -492,15 +492,15 @@ exports.myCourses = async (req, res) => {
 exports.getCommonDetails = async (req, res) => {
   try {
     let aboutTheApp = await Page.findOne({
-      seoTilte: 'contact-us',
+      seoTitle: 'contact-us',
       status: 1
     });
     let privacyPolicy = await Page.findOne({
-      seoTilte: 'privacy-policy',
+      seoTitle: 'privacy-policy',
       status: 1
     });
     let termsOfService = await Page.findOne({
-      seoTilte: 'terms-of-service',
+      seoTitle: 'terms-of-service',
       status: 1
     });
     res.send({
