@@ -490,19 +490,25 @@ exports.myCourses = async (req, res) => {
 };
 
 exports.getCommonDetails = async (req, res) => {
+  var queryProjection = {
+    title: 1,
+    seoTitle: 1,
+    description: 1,
+    image: 1
+  }
   try {
     let aboutTheApp = await Page.findOne({
       seoTitle: 'contact-us',
       status: 1
-    });
+    }, queryProjection);
     let privacyPolicy = await Page.findOne({
       seoTitle: 'privacy-policy',
       status: 1
-    });
+    }, queryProjection);
     let termsOfService = await Page.findOne({
       seoTitle: 'terms-of-service',
       status: 1
-    });
+    }, queryProjection);
     res.send({
       success: 1,
       aboutTheApp: aboutTheApp,
