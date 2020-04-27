@@ -495,7 +495,11 @@ exports.getCommonDetails = async (req, res) => {
     seoTitle: 1,
     description: 1,
     image: 1
-  }
+  };
+  var queryProjectionFeedBack = {
+    title: 1,
+    description: 1
+  };
   try {
     let aboutTheApp = await Page.findOne({
       seoTitle: 'contact-us',
@@ -511,7 +515,7 @@ exports.getCommonDetails = async (req, res) => {
     }, queryProjection);
     let helpAndFeedback = await HelpsAndFeedBack.find({
       status: 1
-    });
+    },queryProjectionFeedBack);
     res.send({
       success: 1,
       aboutTheApp: aboutTheApp,
