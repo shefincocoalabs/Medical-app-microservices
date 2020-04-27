@@ -22,7 +22,6 @@ module.exports = (app) => {
     app.patch('/accounts/update-profile',auth, userImageUpload.single('image'), accounts.updateProfile);
     app.get('/accounts/wish-list',auth, accounts.getWishList);
     app.get('/accounts/my-courses',auth, accounts.myCourses);
-    app.get('/accounts/profile-upload',auth, accounts.uploadProfileImage);
     app.get('/accounts/common-details',auth, accounts.getCommonDetails);
     
 };
