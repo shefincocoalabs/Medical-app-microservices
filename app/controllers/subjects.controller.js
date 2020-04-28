@@ -50,6 +50,8 @@
   exports.listChapters = (req, res) => {
     var subjectId = req.params.id;
     var isValidId = ObjectId.isValid(subjectId);
+    var userData = req.identity.data;
+    var userId = userData.id;
     if (!isValidId) {
       var responseObj = {
         success: 0,
@@ -75,21 +77,52 @@
       gradientStartColorHex: 1,
       gradientEndColorHex: 1
     };
-    chapters.find(findCriteria, queryProjection).then(result => {
-      if (!result) {
+    try {
+      var userDeatils = await Users.findOne({
+        _id: userId,
+        status: 1
+      });
+      var purchasedChapterIds = userDeatils.purchasedChapterIds;
+      var chaptersList = await chapters.find(findCriteria, queryProjection);
+      if (!chaptersList) {
         return res.send({
           success: 0,
           message: 'Chapter list not found'
         })
+      };
+      var resultArray = [];
+      for (let i = 0; i < chaptersList.length; i++) {
+        let resultObj = {};
+        let chapterId = chaptersList[i]._id;
+        let checkIfPurchased = purchasedChapterIds.includes(chapterId);
+        resultObj._id = chaptersList[i]._id;
+        resultObj.title = chaptersList[i].title;
+        resultObj.subtitle = chaptersList[i].subtitle;
+        responseObj.image = chaptersList[i].image;
+        resultObj.bannerImage = chaptersList[i].bannerImage;
+        resultObj.gradientStartColorHex = chaptersList[i].gradientStartColorHex;
+        resultObj.gradientEndColorHex = chaptersList[i].gradientEndColorHex;
+        if (checkIfPurchased) {
+          responseObj.purchased = true;
+        } else {
+          responseObj.purchased = false;
+        }
+        resultArray.push(responseObj);
       }
-      var chapterListLength = result.length;
+      var chapterListLength = chaptersList.length;
       res.send({
         success: 1,
         message: 'Chapter listed successfully',
         chaptersCount: chapterListLength,
-        chapterList: result
+        chapterList: resultArray
       });
-    })
+    } catch (err) {
+      res.send({
+        success: 0,
+        message: err.message
+      });
+    }
+
   }
 
   // *** API for getting chapter details ***
