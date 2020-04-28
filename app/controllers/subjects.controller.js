@@ -98,14 +98,14 @@
         resultObj._id = chaptersList[i]._id;
         resultObj.title = chaptersList[i].title;
         resultObj.subtitle = chaptersList[i].subtitle;
-        responseObj.image = chaptersList[i].image;
+        resultObj.image = chaptersList[i].image;
         resultObj.bannerImage = chaptersList[i].bannerImage;
         resultObj.gradientStartColorHex = chaptersList[i].gradientStartColorHex;
         resultObj.gradientEndColorHex = chaptersList[i].gradientEndColorHex;
         if (checkIfPurchased) {
-          responseObj.purchased = true;
+          resultObj.purchased = true;
         } else {
-          responseObj.purchased = false;
+          resultObj.purchased = false;
         }
         resultArray.push(responseObj);
       }
