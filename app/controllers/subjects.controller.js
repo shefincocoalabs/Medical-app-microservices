@@ -47,7 +47,7 @@
   }
 
   // *** API for listing chapters under a particular subject ***
-  exports.listChapters = (req, res) => {
+  exports.listChapters = async(req, res) => {
     var subjectId = req.params.id;
     var isValidId = ObjectId.isValid(subjectId);
     var userData = req.identity.data;
