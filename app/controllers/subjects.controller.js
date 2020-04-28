@@ -107,7 +107,7 @@
         } else {
           resultObj.purchased = false;
         }
-        resultArray.push(responseObj);
+        resultArray.push(resultObj);
       }
       var chapterListLength = chaptersList.length;
       res.send({
