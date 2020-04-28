@@ -5,6 +5,6 @@ module.exports = (app) => {
     app.get('/videos/summary',auth, video.getSummary);
     app.get('/videos/home',auth, video.getHomeVideo);
     app.get('/videos/chapter/:chapterId',auth, video.getChapterVideo);
-    app.get('/videos//next-videos/:chapterId',auth, video.nextVideos);
+    app.get('/videos/next-videos/:chapterId',auth, video.nextVideos);
 };
 

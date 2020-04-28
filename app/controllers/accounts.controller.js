@@ -261,12 +261,13 @@ exports.validateOtp = async (req, res) => {
         phone: phone
       })
       userId = result._id;
+      var image = result.image ? result.image : '';
       var payload = {
         id: result._id,
         firstName: result.firstName,
         email: result.email,
         phone: result.phone,
-        image: '',
+        image: image,
         deviceToken: deviceToken
       };
       var token = jwt.sign({
@@ -515,7 +516,7 @@ exports.getCommonDetails = async (req, res) => {
     }, queryProjection);
     let helpAndFeedback = await HelpsAndFeedBack.find({
       status: 1
-    },queryProjectionFeedBack);
+    }, queryProjectionFeedBack);
     res.send({
       success: 1,
       aboutTheApp: aboutTheApp,
