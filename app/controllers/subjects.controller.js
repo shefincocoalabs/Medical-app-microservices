@@ -47,7 +47,7 @@
   }
 
   // *** API for listing chapters under a particular subject ***
-  exports.listChapters = async(req, res) => {
+  exports.listChapters = async (req, res) => {
     var subjectId = req.params.id;
     var isValidId = ObjectId.isValid(subjectId);
     var userData = req.identity.data;
@@ -94,6 +94,10 @@
       for (let i = 0; i < chaptersList.length; i++) {
         let resultObj = {};
         let chapterId = chaptersList[i]._id;
+        let countVideos = await Videos.countDocuments({
+          chapterId: chapterId,
+          status: 1
+        });
         let checkIfPurchased = purchasedChapterIds.includes(chapterId);
         resultObj._id = chaptersList[i]._id;
         resultObj.title = chaptersList[i].title;
@@ -102,6 +106,7 @@
         resultObj.bannerImage = chaptersList[i].bannerImage;
         resultObj.gradientStartColorHex = chaptersList[i].gradientStartColorHex;
         resultObj.gradientEndColorHex = chaptersList[i].gradientEndColorHex;
+        resultObj.videosCount = countVideos;
         if (checkIfPurchased) {
           resultObj.purchased = true;
         } else {
@@ -127,6 +132,8 @@
 
   // *** API for getting chapter details ***
   exports.chapterDetail = async (req, res) => {
+    var userData = req.identity.data;
+    var userId = userData.id;
     var chapterId = req.params.id;
     var isValidId = ObjectId.isValid(chapterId);
     if (!isValidId) {
@@ -158,7 +165,13 @@
       bannerImage: 1,
       gradientStartColorHex: 1,
       gradientEndColorHex: 1
-    }
+    };
+    var userDeatils = await Users.findOne({
+      _id: userId,
+      status: 1
+    });
+    var purchasedChapterIds = userDeatils.purchasedChapterIds;
+    let checkIfPurchased = purchasedChapterIds.includes(chapterId);
     var chapter = await chapters.findOne(findCriteria, queryProjection).populate({
       path: 'authorIds',
       Authors,
@@ -210,6 +223,11 @@
     chapterDetails.bannerImage = chapter ? chapter.bannerImage : '';
     chapterDetails.gradientStartColorHex = chapter ? chapter.gradientStartColorHex : '';
     chapterDetails.gradientEndColorHex = chapter ? chapter.gradientEndColorHex : '';
+    if (checkIfPurchased) {
+      chapterDetails.purchased = true;
+    } else {
+      chapterDetails.purchased = false;
+    }
     // chapterDetails.chapterVideos = chapterVideos;
     res.send({
       success: 1,
