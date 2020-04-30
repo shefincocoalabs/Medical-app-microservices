@@ -69,21 +69,29 @@
       name: 1,
       status: 1
     };
-    Pages.find({
-      seoTitle: 'contact-us',
-      status: 1
-    }, queryProjection).then(result => {
-      if (!result) {
-        return res.send({
-          success: 0,
-          message: 'No results found'
-        })
-      }
-      res.send({
-        success: 1,
-        items: result,
-        message: 'contact-us fetched successfully'
-      })
+    var contactObj = {};
+    contactObj.phone = '+919496369416',
+    contactObj.email = 'sulcusandgyri@gmail.com'
+    // Pages.find({
+    //   seoTitle: 'contact-us',
+    //   status: 1
+    // }, queryProjection).then(result => {
+    //   if (!result) {
+    //     return res.send({
+    //       success: 0,
+    //       message: 'No results found'
+    //     })
+    //   }
+    //   res.send({
+    //     success: 1,
+    //     items: result,
+    //     message: 'contact-us fetched successfully'
+    //   })
+    // })
+    res.send({
+      success: 1,
+      items: contactObj,
+      message: 'Contact-us data fetched successfully'
     })
   }
 
