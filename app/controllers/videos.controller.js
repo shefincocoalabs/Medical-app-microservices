@@ -345,7 +345,7 @@ async function getVideos(reqObj) {
     //find list subcategories
     let subCategories = await SubCategory.find({
         status: 1
-      }).limit(10).lean()
+      }).limit(6).lean()
       // }).skip(Math.random() * count).limit(3).lean()
       .catch(err => {
         return res.send({

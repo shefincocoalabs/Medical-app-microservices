@@ -454,8 +454,6 @@ exports.myCourses = async (req, res) => {
   let response;
   let items = [];
   let userDetails = await User.findOne(findCriteria);
-  console.log('purchasedChapterIds');
-  console.log(userDetails);
   purchasedChapterIds = userDetails.purchasedChapterIds;
 
   if (purchasedChapterIds.length == 0) {
@@ -466,12 +464,10 @@ exports.myCourses = async (req, res) => {
   }
   await Promise.all(purchasedChapterIds.map(async (item) => {
     purchasedChapterId = item;
-    console.log(purchasedChapterId);
     let result = await Chapter.findOne({
       _id: purchasedChapterId,
       status: 1
     });
-    console.log(result);
     let videosCount = await Video.countDocuments({
       chapterId: purchasedChapterId,
       status: 1

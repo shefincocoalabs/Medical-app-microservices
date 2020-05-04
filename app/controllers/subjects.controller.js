@@ -602,13 +602,14 @@
       }
 
       var videoRatings = await VideoRatings.find({
-        videoId: videoId
+        videoId: videoId,
+        status: 1
       })
       numberOfRatings = videoRatings.length;
       for (i = 0; i < numberOfRatings; i++) {
         totalRating = totalRating + parseFloat(videoRatings[i].rating);
       }
-      averageRating = totalRating / numberOfRatings;
+      averageRating = (totalRating / numberOfRatings).toFixed(2);
       var updateVideoRating = await Videos.update({
         _id: videoId
       }, {
