@@ -653,6 +653,7 @@ exports.nextVideos = async (req, res) => {
         message: 'No videos found'
       })
     };
+
     for (var i = 0; i < result.length; i++) {
       responseObj._id = result[i]._id;
       responseObj.title = result[i].title;
