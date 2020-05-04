@@ -583,12 +583,17 @@ exports.getChapterVideo = async (req, res) => {
           } else {
             videos[i].isBookMarked = false;
           }
-
+        
           item.videos.push(videos[i]);
         }
         // }
       }
+      
+      if(item.videos.length > 0){
       subCategoryVideoArray.push(item);
+      }
+
+
     }));
     let responseObj = {
       success: 1,
