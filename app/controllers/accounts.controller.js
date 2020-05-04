@@ -450,35 +450,33 @@ exports.myCourses = async (req, res) => {
     status: 1
   };
   var purchasedChapterIds;
-  var purchasedChapterId;
   let response;
   let items = [];
   let userDetails = await User.findOne(findCriteria);
   purchasedChapterIds = userDetails.purchasedChapterIds;
-
+  console.log(purchasedChapterIds);
   if (purchasedChapterIds.length == 0) {
     return res.send({
       success: 0,
       message: 'User is not purchased any chapter'
     })
   }
-  await Promise.all(purchasedChapterIds.map(async (item) => {
-    purchasedChapterId = item;
+  for (var i = 0; i < purchasedChapterIds.length; i++) {
     let result = await Chapter.findOne({
-      _id: purchasedChapterId,
+      _id: purchasedChapterIds[i],
       status: 1
     });
     let videosCount = await Video.countDocuments({
-      chapterId: purchasedChapterId,
+      chapterId: purchasedChapterIds[i],
       status: 1
-    })
+    });
     response = {
       id: result._id,
       title: result.title,
       videosCount: videosCount
     };
-    items.push(response)
-  }));
+    items.push(response);
+  }
   res.send({
     success: 1,
     message: 'My courses listed successfully',
