@@ -629,7 +629,8 @@ exports.nextVideos = async (req, res) => {
     averageRating: 1,
     length: 1,
     video: 1,
-    thumbnail: 1
+    thumbnail: 1,
+    isFree: 1
   };
   var responseObj = {};
   var items = [];
@@ -659,6 +660,7 @@ exports.nextVideos = async (req, res) => {
       responseObj.length = result[i].length;
       responseObj.averageRating = result[i].averageRating;
       responseObj.thumbnail = result[i].thumbnail;
+      responseObj.isFree = result[i].isFree;
 
       items.push(responseObj);
     }

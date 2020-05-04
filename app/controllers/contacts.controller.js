@@ -70,7 +70,7 @@
       status: 1
     };
     var contactObj = {};
-    contactObj.phone = '+919876543210',
+    contactObj.phone = '919876543210',
     contactObj.email = 'sulcusandgyri@gmail.com'
     // Pages.find({
     //   seoTitle: 'contact-us',
