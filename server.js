@@ -9,6 +9,10 @@ env = env ? env : "development";
 console.log("Environment is " + env);
 const dbConfig = require('./config/database.config.js')[env];
 
+if(!dbConfig){
+  console.log("Database configuaration for environment " + env + " is not in the db config file. Exiting...");
+  process.exit(0);
+}
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
