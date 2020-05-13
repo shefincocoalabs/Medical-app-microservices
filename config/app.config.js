@@ -10,7 +10,7 @@ module.exports = {
   },
 
   gateway: {
-    url: "http://localhost:9000"
+    url: "http://localhost:8081"
   },
   profile: {
     maxImageCount: 10,
