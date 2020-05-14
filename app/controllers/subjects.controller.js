@@ -780,6 +780,7 @@
     let paymentData = {
       userId,
       transactionId: transactionId,
+      chapterId,
       amount: amount,
       paidStatus: paidStatus,
       paidOn: paidOn,
