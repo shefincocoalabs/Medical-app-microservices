@@ -10,9 +10,16 @@ module.exports = {
     // url: 'mongodb://@localhost:27017/Medical',
 
     // url: 'mongodb+srv://admin:Cmx5tPxvRFCjB8F9@cluster0-trsnb.mongodb.net/Medical?retryWrites=true&w=majority'
-    url: 'mongodb://qadba2020:qaxon%402020@127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb',
+    url: 'mongodb://127.0.0.1:27017',
     user: 'qadba2020', 
-    pass: 'qaxon@2020'
+    pass: 'qaxon@2020',
+    authObj :{
+      "auth": {
+        "authSource": "admin"
+      },
+      "user": "qadba2020",
+      "pass": "qaxon@2020"
+    }
 
     // {user: '<USER_NAME>', pass: '<P@SS>'}
   }
