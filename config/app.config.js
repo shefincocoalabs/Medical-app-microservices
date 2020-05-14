@@ -1,4 +1,4 @@
-var commonStorePath = 'http://172.104.61.150/learning/common/uploads'
+var commonStorePath = 'http://images.qaxon.in'
 module.exports = {
   sms: {
     fromNo: "",
@@ -15,7 +15,7 @@ module.exports = {
   profile: {
     maxImageCount: 10,
     imageBase: commonStorePath + '/user-images/',
-    imageUploadPath: '/var/www/html/learning/common/uploads/user-images/'
+    imageUploadPath: '/var/www/html/images.qaxon.in/'
   },
   file: {
     imageBase: commonStorePath + '/files/'
