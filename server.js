@@ -30,7 +30,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 module.exports = {
   connectToDb: function (callback) {
-
+console.log("dbConfig.url")
+console.log(dbConfig.url)
+console.log("dbConfig.url")
     mongoose.connect(dbConfig.url, {
       useNewUrlParser: true,
 
