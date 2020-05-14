@@ -15,7 +15,7 @@ module.exports = {
   profile: {
     maxImageCount: 10,
     imageBase: commonStorePath + '/user-images/',
-    imageUploadPath: '/var/www/html/images.qaxon.in/'
+    imageUploadPath: '/var/www/html/images.qaxon.in/user-images/'
   },
   file: {
     imageBase: commonStorePath + '/files/'
