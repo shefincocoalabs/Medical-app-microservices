@@ -8,7 +8,7 @@ module.exports = {
   },
   production: {
     // url: 'mongodb+srv://admin:Cmx5tPxvRFCjB8F9@cluster0-trsnb.mongodb.net/Medical?retryWrites=true&w=majority'
-    url: 'mongodb://qadba2020:qaxon%402020@localhost:27017/Medical',
+    url: 'mongodb://qadba2020:qaxon@2020@localhost:27017/Medical?authSource=admin',
     user: 'qadba2020', 
     pass: 'qaxon@2020'
 
