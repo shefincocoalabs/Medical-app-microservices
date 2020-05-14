@@ -34,7 +34,7 @@ module.exports = {
 console.log("dbConfig.url")
 console.log(dbConfig.url)
 console.log("dbConfig.url")
-    mongoose.connect(dbConfig.url,{ useNewUrlParser: true }).then(() => {
+    mongoose.connect(dbConfig.url,{ useNewUrlParser: true , useUnifiedTopology: true}).then(() => {
       console.log("Successfully connected to the database");
       if (callback) {
         callback();
