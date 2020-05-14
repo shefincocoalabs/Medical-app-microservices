@@ -8,6 +8,7 @@ var env = process.env.NODE_ENV;
 env = env ? env : "development";
 console.log("Environment is " + env);
 const dbConfig = require('./config/database.config.js')[env];
+console.log(dbConfig)
 
 if(!dbConfig){
   console.log("Database configuaration for environment " + env + " is not in the db config file. Exiting...");
