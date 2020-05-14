@@ -33,7 +33,7 @@ module.exports = {
 console.log("dbConfig.url")
 console.log(dbConfig.url)
 console.log("dbConfig.url")
-    mongoose.connect(dbConfig.url,{auth : {user : dbConfig.user, pass : dbConfig.pass}} ).then(() => {
+    mongoose.connect(dbConfig.url,{auth : {user : dbConfig.user, password : dbConfig.pass}} ).then(() => {
       console.log("Successfully connected to the database");
       if (callback) {
         callback();
