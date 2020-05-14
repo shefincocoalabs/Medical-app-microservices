@@ -15,9 +15,6 @@ module.exports = {
     // user: 'qadba2020', 
     // pass: 'qaxon@2020',
     authObj :{
-      "auth": {
-        "authSource": "admin"
-      },
       "user": "qadba2020",
       "pass": "qaxon@2020.com"
     }
