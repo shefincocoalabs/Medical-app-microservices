@@ -7,17 +7,20 @@ module.exports = {
     // pass: 'qaxon@2020'
   },
   production: {
-    url: 'mongodb://@localhost:27017/Medical',
-    // url: 'mongodb://qadba2020:qaxon%402020.com@localhost:27017/Medical',
+    // url: 'mongodb://@localhost:27017/Medical',
+    url: 'mongodb://qadba2020:qaxon%402020.com@127.0.0.1:27017/Medical',
 
     // url: 'mongodb+srv://admin:Cmx5tPxvRFCjB8F9@cluster0-trsnb.mongodb.net/Medical?retryWrites=true&w=majority'
     // url: 'mongodb://127.0.0.1:27017',
     // user: 'qadba2020', 
     // pass: 'qaxon@2020',
-    authObj :{
-      "user": "qadba2020",
-      "pass": "qaxon@2020.com"
-    }
+    // authObj :{
+    //   "auth": {
+    //     "authSource": "admin"
+    //   },
+    //   "user": "qadba2020",
+    //   "pass": "qaxon@2020.com"
+    // }
 
     // {user: '<USER_NAME>', pass: '<P@SS>'}
   }
