@@ -2,6 +2,7 @@
   var Contact = require('../models/contact.model.js');
   var Pages = require('../models/page.model.js');
   var moment = require('moment');
+  var Settings = require('../models/settings.model');
 
   // *** API for submitting contact us ***
   exports.saveContact = (req, res) => {
@@ -61,7 +62,7 @@
       });
   };
 
-  exports.getContact = (req, res) => {
+  exports.getContact = async(req, res) => {
     var queryProjection = {
       email: 1,
       phone: 1,
@@ -69,28 +70,18 @@
       name: 1,
       status: 1
     };
-    var contactObj = {};
-    contactObj.phone = '919876543210',
-    contactObj.email = 'sulcusandgyri@gmail.com'
-    // Pages.find({
-    //   seoTitle: 'contact-us',
-    //   status: 1
-    // }, queryProjection).then(result => {
-    //   if (!result) {
-    //     return res.send({
-    //       success: 0,
-    //       message: 'No results found'
-    //     })
-    //   }
-    //   res.send({
-    //     success: 1,
-    //     items: result,
-    //     message: 'contact-us fetched successfully'
-    //   })
-    // })
+   
+    let settingsData = await Settings.findOne()
+    .catch(err => {
+    return res.send({
+      success: 0,
+      message: 'Something went wrong while fetching settings data',
+      error: err
+    })
+  })
     res.send({
       success: 1,
-      items: contactObj,
+      items: settingsData,
       message: 'Contact-us data fetched successfully'
     })
   }
