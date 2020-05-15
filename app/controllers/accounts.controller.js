@@ -25,11 +25,11 @@ exports.register = async (req, res) => {
   var firstName = req.body.firstName;
   var email = req.body.email;
   var phone = req.body.phone;
-  var collegeId = req.body.collegeId;
+  var college = req.body.college;
   var acceptTerms = req.body.acceptTerms;
   var otp = Math.floor(1000 + Math.random() * 9000);
   const apiToken = uuidv4();
-  if (!firstName || !email || !phone || !acceptTerms) {
+  if (!firstName || !email || !college || !phone || !acceptTerms) {
     var errors = [];
     if (!firstName) {
       errors.push({
@@ -41,6 +41,12 @@ exports.register = async (req, res) => {
       errors.push({
         field: "email",
         message: "Email cannot be empty"
+      });
+    }
+    if (!college) {
+      errors.push({
+        field: "college",
+        message: "College cannot be empty"
       });
     }
     if (!phone) {
@@ -79,7 +85,7 @@ exports.register = async (req, res) => {
     email: email,
     phone: phone,
     image: '',
-    // collegeId: collegeId,
+    college,
     is_blocked: 0,
     acceptTerms: acceptTerms,
     deviceToken: '',

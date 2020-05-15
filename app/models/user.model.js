@@ -9,6 +9,7 @@ const UserSchema = mongoose.Schema({
     phone: String,
     middleName: String,
     lastName: String,
+    college: String,
     collegeId: { type: mongoose.Schema.Types.ObjectId, ref: 'College'},
     acceptTerms: Boolean,
     deviceToken: String,
