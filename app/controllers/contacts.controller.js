@@ -71,7 +71,7 @@
       status: 1
     };
    
-    let settingsData = await Settings.findOne()
+    let settingsData = await Settings.findOne({status : 1})
     .catch(err => {
     return res.send({
       success: 0,
@@ -79,9 +79,13 @@
       error: err
     })
   })
+  let contactsObj = {};
+  contactsObj.email = settingsData.email;
+  contactsObj.phone = settingsData.phone;
+  contactsObj.address = settingsData.address;
     res.send({
       success: 1,
-      items: settingsData,
+      items: contactsObj,
       message: 'Contact-us data fetched successfully'
     })
   }
