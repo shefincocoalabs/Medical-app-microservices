@@ -23,5 +23,6 @@ module.exports = (app) => {
     app.get('/accounts/wish-list',auth, accounts.getWishList);
     app.get('/accounts/my-courses',auth, accounts.myCourses);
     app.get('/accounts/common-details',auth, accounts.getCommonDetails);
+    app.get('/accounts/colleges', accounts.getColleges);
     
 };

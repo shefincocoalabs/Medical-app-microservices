@@ -533,3 +533,32 @@ exports.getCommonDetails = async (req, res) => {
     });
   }
 }
+
+exports.getColleges = async (req, res) => {
+
+  let collegesData = await User.find({
+    status: 1
+  }, {
+    college: 1
+  })
+  .sort({ college: 'asc' })
+  .distinct('college')
+    .catch(err => {
+      return {
+        success: 0,
+        message: 'Something went wrong while getting colleges',
+        error: err
+      }
+    })
+  if (collegesData && collegesData.error && (collegesData.error !== null)) {
+    return res.send(collegesData);
+  }
+  let uNames = new Map(collegesData.map(s => [s.toLowerCase(), s]));
+  collegesData =  [...uNames.values()];
+//  console.log( [...uNames.values()])
+  res.send({
+    success: 1,
+    colleges: collegesData,
+    message: 'College listed successfully'
+  })
+}
