@@ -555,6 +555,7 @@ exports.getColleges = async (req, res) => {
   }
   let uNames = new Map(collegesData.map(s => [s.toLowerCase(), s]));
   collegesData =  [...uNames.values()];
+   collegesData = collegesData.filter(function(entry) { return entry.trim() != ''; });
 //  console.log( [...uNames.values()])
   res.send({
     success: 1,
