@@ -90,14 +90,26 @@
           message: 'Chapter list not found'
         })
       };
+      let watchHistory = null;
+
+      if(userDeatils.watchHistory){
+        watchHistory = userDeatils.watchHistory;
+      }
       var resultArray = [];
       for (let i = 0; i < chaptersList.length; i++) {
+        let viewedVideosCount = 0;
         let resultObj = {};
         let chapterId = chaptersList[i]._id;
         let countVideos = await Videos.countDocuments({
           chapterId: chapterId,
           status: 1
         });
+        if(watchHistory !== null){
+        let chapterIndex = watchHistory.findIndex(x => JSON.stringify(x.chapterId) == JSON.stringify(chapterId));
+        if(chapterIndex > -1){
+          viewedVideosCount = watchHistory[chapterIndex].watchedVideoIds.length;
+        }
+        }
         let checkIfPurchased = purchasedChapterIds.includes(chapterId);
         resultObj._id = chaptersList[i]._id;
         resultObj.title = chaptersList[i].title;
@@ -107,6 +119,7 @@
         resultObj.gradientStartColorHex = chaptersList[i].gradientStartColorHex;
         resultObj.gradientEndColorHex = chaptersList[i].gradientEndColorHex;
         resultObj.videosCount = countVideos;
+        resultObj.viewedVideosCount = viewedVideosCount;
         if (checkIfPurchased) {
           resultObj.purchased = true;
         } else {
