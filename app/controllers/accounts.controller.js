@@ -458,6 +458,7 @@ exports.myCourses = async (req, res) => {
   var purchasedChapterIds;
   let response;
   let items = [];
+  let watchHistory = null;
   let userDetails = await User.findOne(findCriteria);
   purchasedChapterIds = userDetails.purchasedChapterIds;
   console.log(purchasedChapterIds);
@@ -467,7 +468,17 @@ exports.myCourses = async (req, res) => {
       message: 'User is not purchased any chapter'
     })
   }
+  if(userDetails.watchHistory){
+    watchHistory = userDetails.watchHistory;
+  }
   for (var i = 0; i < purchasedChapterIds.length; i++) {
+    let viewedVideosCount = 0;
+    if(watchHistory !== null){
+      let chapterIndex = watchHistory.findIndex(x => JSON.stringify(x.chapterId) == JSON.stringify(purchasedChapterIds[i]));
+      if(chapterIndex > -1){
+        viewedVideosCount = watchHistory[chapterIndex].watchedVideoIds.length;
+      }
+      }
     let result = await Chapter.findOne({
       _id: purchasedChapterIds[i],
       status: 1
@@ -479,7 +490,8 @@ exports.myCourses = async (req, res) => {
     response = {
       id: result._id,
       title: result.title,
-      videosCount: videosCount
+      videosCount: videosCount,
+      viewedVideosCount 
     };
     items.push(response);
   }
