@@ -14,6 +14,10 @@ const UserSchema = mongoose.Schema({
     acceptTerms: Boolean,
     deviceToken: String,
     purchasedChapterIds: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}],
+    watchHistory: [{
+        chapterId :  { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter'},
+        watchedVideoIds :  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Videos'}],
+    }],
     is_blocked: Number,
     status: Number,
     tsCreatedAt: Number,

@@ -252,8 +252,8 @@ exports.getHomeVideo = async (req, res) => {
   }
   //find user purchased chapters
   let ids = await Users.findOne(whereCondition, {
-      purchasedChapterIds: 1
-    })
+    purchasedChapterIds: 1
+  })
     .catch(err => {
       return res.send({
         success: 0,
@@ -273,22 +273,22 @@ exports.getHomeVideo = async (req, res) => {
 
   //list popular videos list
   let popularVideos = await Videos.find({
+    status: 1
+  }).populate({
+    path: 'videoTypeId',
+    VideoType,
+    match: {
       status: 1
-    }).populate({
-      path: 'videoTypeId',
-      VideoType,
-      match: {
-        status: 1
-      },
-      select: '_id name'
-    }).populate({
-      path: 'subCategoryId',
-      VideoType,
-      match: {
-        status: 1
-      },
-      select: '_id name'
-    }).limit(5).lean()
+    },
+    select: '_id name'
+  }).populate({
+    path: 'subCategoryId',
+    VideoType,
+    match: {
+      status: 1
+    },
+    select: '_id name'
+  }).limit(5).lean()
     .catch(err => {
       return res.send({
         success: 0,
@@ -332,8 +332,8 @@ exports.getHomeVideo = async (req, res) => {
 
   //find count of subcategories
   let count = await SubCategory.countDocuments({
-      status: 1
-    })
+    status: 1
+  })
     .catch(err => {
       return res.send({
         success: 0,
@@ -344,8 +344,8 @@ exports.getHomeVideo = async (req, res) => {
 
   //find list subcategories
   let subCategories = await SubCategory.find({
-      status: 1
-    }).limit(6).lean()
+    status: 1
+  }).limit(6).lean()
     // }).skip(Math.random() * count).limit(3).lean()
     .catch(err => {
       return res.send({
@@ -363,18 +363,18 @@ exports.getHomeVideo = async (req, res) => {
   //find videos of subcategories 
 
   let videos = await Videos.find({
-      subCategoryId: {
-        $in: subIdArray
-      },
+    subCategoryId: {
+      $in: subIdArray
+    },
+    status: 1
+  }).populate({
+    path: 'videoTypeId',
+    VideoType,
+    match: {
       status: 1
-    }).populate({
-      path: 'videoTypeId',
-      VideoType,
-      match: {
-        status: 1
-      },
-      select: '_id name'
-    }).lean()
+    },
+    select: '_id name'
+  }).lean()
     .catch(err => {
       return res.send({
         success: 0,
@@ -440,8 +440,8 @@ exports.getChapterVideo = async (req, res) => {
   }
   if (params.chapterId) {
     let ids = await Users.findOne(whereCondition, {
-        purchasedChapterIds: 1
-      })
+      purchasedChapterIds: 1
+    })
       .catch(err => {
         return res.send({
           success: 0,
@@ -465,9 +465,9 @@ exports.getChapterVideo = async (req, res) => {
     }
 
     let subCategories = await SubCategory.find({
-        status: 1,
-        chapterId: params.chapterId.trim()
-      }).lean()
+      status: 1,
+      chapterId: params.chapterId.trim()
+    }).lean()
       .catch(err => {
         return res.send({
           success: 0,
@@ -476,9 +476,9 @@ exports.getChapterVideo = async (req, res) => {
         })
       });
     let chapter = await Chapter.findOne({
-        status: 1,
-        _id: params.chapterId.trim()
-      }).lean()
+      status: 1,
+      _id: params.chapterId.trim()
+    }).lean()
       .catch(err => {
         return res.send({
           success: 0,
@@ -495,19 +495,19 @@ exports.getChapterVideo = async (req, res) => {
       subIdArray[i] = subCategories[i]._id;
     }
     let videos = await Videos.find({
-        subCategoryId: {
-          $in: subIdArray
-        },
-        status: 1
-      }).populate({
-        path: 'videoTypeId',
-        VideoType,
-        match: {
-          status: 1,
-          // name: {$ne: 'Summary'}
-        },
-        select: '_id name'
-      }).lean()
+      subCategoryId: {
+        $in: subIdArray
+      },
+      status: 1
+    }).populate({
+      path: 'videoTypeId',
+      VideoType,
+      match: {
+        status: 1,
+        // name: {$ne: 'Summary'}
+      },
+      select: '_id name'
+    }).lean()
       .catch(err => {
         return res.send({
           success: 0,
@@ -516,9 +516,9 @@ exports.getChapterVideo = async (req, res) => {
         })
       });
     let summary = await Videos.find({
-        status: 1,
-        chapterId: params.chapterId.trim(),
-      })
+      status: 1,
+      chapterId: params.chapterId.trim(),
+    })
       .populate({
         path: 'videoTypeId',
         VideoType,
@@ -583,14 +583,14 @@ exports.getChapterVideo = async (req, res) => {
           } else {
             videos[i].isBookMarked = false;
           }
-        
+
           item.videos.push(videos[i]);
         }
         // }
       }
-      
-      if(item.videos.length > 0){
-      subCategoryVideoArray.push(item);
+
+      if (item.videos.length > 0) {
+        subCategoryVideoArray.push(item);
       }
 
 
@@ -682,5 +682,109 @@ exports.nextVideos = async (req, res) => {
       success: 0,
       message: err.message
     });
+  }
+}
+
+
+exports.markAsWatched = async (req, res) => {
+  var userData = req.identity.data;
+  var userId = userData.id;
+  var videoId = req.params.videoId;
+  let whereCondition = {
+    _id: videoId,
+    status: 1
+  }
+  let videoData = await Videos.findOne(whereCondition)
+    .catch(err => {
+      return {
+        success: 0,
+        message: 'Something went wrong while getting video data',
+        error: err
+      }
+    })
+  if (videoData && videoData.error && (videoData.error !== null)) {
+    return res.send(videoData);
+  }
+  if (videoData) {
+    var chapterId = videoData.chapterId;
+    let userData = await Users.findOne({
+      _id: userId,
+      status: 1
+    })
+      .catch(err => {
+        return {
+          success: 0,
+          message: 'Something went wrong while getting user data',
+          error: err
+        }
+      })
+    if (userData && userData.error && (userData.error !== null)) {
+      return res.send(userData);
+    }
+    let watchHistory = userData.watchHistory;
+    let chapterIndex = watchHistory.findIndex(x => JSON.stringify(x.chapterId) == JSON.stringify(chapterId));
+    if (chapterIndex > -1) {
+      let watchedVideoIds = watchHistory[chapterIndex].watchedVideoIds;
+      console.log("type : " + typeof videoId)
+      let videoIndex = watchedVideoIds.findIndex(watchedVideoId => JSON.stringify(watchedVideoId) === JSON.stringify(videoId));
+      if (videoIndex > -1) {
+        res.send({
+          success: 1,
+          message: 'Already Video marked as watched',
+        })
+      }else{
+        watchHistory[chapterIndex].watchedVideoIds.push(videoId);
+        let updateData = await Users.update(
+          { _id: userId },
+          { watchHistory  }
+        )
+          .catch(err => {
+            return {
+              success: 0,
+              message: 'Something went wrong while updating video watched',
+              error: err
+            }
+          })
+        if (updateData && updateData.error && (updateData.error !== null)) {
+          return res.send(updateData);
+        }
+        res.send({
+          success: 1,
+          message: 'Video marked as watched',
+        })
+      }
+
+     
+
+    } else {
+      let obj = {};
+      obj.chapterId = chapterId;
+      obj.watchedVideoIds = [];
+      obj.watchedVideoIds.push(videoId);
+      let updateData = await Users.update(
+        { _id: userId },
+        { $push: { watchHistory: obj } }
+      )
+        .catch(err => {
+          return {
+            success: 0,
+            message: 'Something went wrong while updating video watched',
+            error: err
+          }
+        })
+      if (updateData && updateData.error && (updateData.error !== null)) {
+        return res.send(updateData);
+      }
+      res.send({
+        success: 1,
+        message: 'Video marked as watched',
+      })
+    }
+
+  } else {
+    return res.send({
+      success: 0,
+      message: 'Invalid video..'
+    })
   }
 }
