@@ -95,6 +95,9 @@
       if(userDeatils.watchHistory){
         watchHistory = userDeatils.watchHistory;
       }
+      console.log("watchHistory")
+      console.log(watchHistory)
+      console.log("watchHistory")
       var resultArray = [];
       for (let i = 0; i < chaptersList.length; i++) {
         let viewedVideosCount = 0;
