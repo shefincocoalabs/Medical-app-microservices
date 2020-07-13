@@ -8,6 +8,7 @@ var Bookmark = require('../models/bookmark.model.js');
 var Video = require('../models/videos.model.js');
 var Chapter = require('../models/chapter.model.js');
 var Page = require('../models/page.model.js');
+var College = require('../models/college.model');
 var HelpsAndFeedBack = require('../models/helpAndFeedback.model.js');
 var config = require('../../config/app.config.js');
 var wishlistConfig = config.wishList;
@@ -546,32 +547,75 @@ exports.getCommonDetails = async (req, res) => {
   }
 }
 
-exports.getColleges = async (req, res) => {
+this.getColleges = async (req, res) => {
+  let projectCriteria = {
+      name : 1,
+      id:1
+  };
+ let collegeData = await College.find({
+     status: 1
+ },projectCriteria)
+     .catch(err => {
+         return {
+             success: 0,
+             message: 'Something went wrong while getting colleges',
+             error: err
+         }
+     })
+ if (collegeData && collegeData.success && (collegeData.success === 0)) {
+     return res.send(collegeData);
+ }
+ var responseObject = {
+  colleges:collegeData,
+      success:1,
+      message: "college data listed"
+ }
+ return res.send(responseObject);
 
-  let collegesData = await User.find({
-    status: 1
-  }, {
-    college: 1
-  })
-  .sort({ college: 'asc' })
-  .distinct('college')
-    .catch(err => {
-      return {
-        success: 0,
-        message: 'Something went wrong while getting colleges',
-        error: err
-      }
-    })
-  if (collegesData && collegesData.error && (collegesData.error !== null)) {
-    return res.send(collegesData);
-  }
-  let uNames = new Map(collegesData.map(s => [s.toLowerCase(), s]));
-  collegesData =  [...uNames.values()];
-   collegesData = collegesData.filter(function(entry) { return entry.trim() != ''; });
-//  console.log( [...uNames.values()])
-  res.send({
-    success: 1,
-    colleges: collegesData,
-    message: 'College listed successfully'
-  })
 }
+
+// exports.getColleges = async (req, res) => {
+//   let collegesData = await College.find({
+//     status : 1
+//   },{
+//     name : 1
+//   })
+//   .sort({ name: 'asc' })
+//    .catch(err => {
+//       return {
+//         success: 0,
+//         message: 'Something went wrong while getting colleges',
+//         error: err
+//       }
+//     })
+//   if (collegesData && collegesData.error && (collegesData.error !== null)) {
+//     return res.send(collegesData);
+//   }
+// //   }
+// //   let collegesData = await User.find({
+// //     status: 1
+// //   }, {
+// //     college: 1
+// //   })
+// //   .sort({ college: 'asc' })
+// //   .distinct('college')
+// //     .catch(err => {
+// //       return {
+// //         success: 0,
+// //         message: 'Something went wrong while getting colleges',
+// //         error: err
+// //       }
+// //     })
+// //   if (collegesData && collegesData.error && (collegesData.error !== null)) {
+// //     return res.send(collegesData);
+// //   }
+// //   let uNames = new Map(collegesData.map(s => [s.toLowerCase(), s]));
+// //   collegesData =  [...uNames.values()];
+// //    collegesData = collegesData.filter(function(entry) { return entry.trim() != ''; });
+// // //  console.log( [...uNames.values()])
+//  return res.send({
+//     success: 1,
+//     colleges: collegesData,
+//     message: 'College listed successfully'
+//   })
+// }
