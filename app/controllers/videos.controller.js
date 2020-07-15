@@ -673,9 +673,7 @@ exports.nextVideos = async (req, res) => {
 
       items.push(responseObj);
     }
-    console.log("items");
-    console.log(items);
-    console.log("items");
+  
     res.send({
       success: 1,
       message: 'Videos listed successfully',
