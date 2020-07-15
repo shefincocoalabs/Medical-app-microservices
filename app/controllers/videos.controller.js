@@ -670,6 +670,9 @@ exports.nextVideos = async (req, res) => {
 
       items.push(responseObj);
     }
+    console.log("items");
+    console.log(items);
+    console.log("items");
     res.send({
       success: 1,
       message: 'Videos listed successfully',
@@ -687,8 +690,9 @@ exports.nextVideos = async (req, res) => {
 
 
 exports.markAsWatched = async (req, res) => {
-  var userData = req.identity.data;
-  var userId = userData.id;
+  // var userData = req.identity.data;
+  // var userId = userData.id;
+  var userId = "5e8f1c6b8a0d600b38f2a522";
   var videoId = req.params.videoId;
   let whereCondition = {
     _id: videoId,
