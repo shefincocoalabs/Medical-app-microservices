@@ -637,7 +637,6 @@ exports.nextVideos = async (req, res) => {
     thumbnail: 1,
     isFree: 1
   };
-  var responseObj = {};
   var items = [];
   try {
     var userDeatils = await Users.findOne({
@@ -646,10 +645,11 @@ exports.nextVideos = async (req, res) => {
     });
     var purchasedChapterIds = userDeatils.purchasedChapterIds;
     let checkIfPurchased = purchasedChapterIds.includes(chapterId);
+    let isPurchased = false;
     if (checkIfPurchased) {
-      responseObj.isPurchased = true;
+      isPurchased = true;
     } else {
-      responseObj.isPurchased = false;
+      isPurchased = false;
     }
     var result = await Videos.find(findCriteria, queryProjection);
     if (!result) {
@@ -660,6 +660,8 @@ exports.nextVideos = async (req, res) => {
     };
 
     for (var i = 0; i < result.length; i++) {
+      var responseObj = {};
+      
       responseObj._id = result[i]._id;
       responseObj.title = result[i].title;
       responseObj.video = result[i].video;
@@ -667,6 +669,7 @@ exports.nextVideos = async (req, res) => {
       responseObj.averageRating = result[i].averageRating;
       responseObj.thumbnail = result[i].thumbnail;
       responseObj.isFree = result[i].isFree;
+      responseObj.isPurchased = isPurchased;
 
       items.push(responseObj);
     }
