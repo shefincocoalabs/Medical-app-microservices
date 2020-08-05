@@ -208,7 +208,8 @@ exports.validateOtp = async (req, res) => {
   var apiToken = params.apiToken;
   var deviceToken = params.deviceToken;
   var userId;
-  if (!phone || !otp || !apiToken || !deviceToken) {
+  if (!phone || !otp || !apiToken) {
+    // if (!phone || !otp || !apiToken || !deviceToken) {
     var errors = [];
     if (!phone) {
       errors.push({
@@ -228,17 +229,20 @@ exports.validateOtp = async (req, res) => {
         message: "api Token is missing"
       });
     }
-    if (!deviceToken) {
-      errors.push({
-        field: "deviceToken",
-        message: "device Token is missing"
-      });
-    }
+    // if (!deviceToken) {
+    //   errors.push({
+    //     field: "deviceToken",
+    //     message: "device Token is missing"
+    //   });
+    // }
     return res.status(200).send({
       success: 0,
       errors: errors,
       code: 200
     });
+  }
+  if(!deviceToken){
+    deviceToken = "";
   }
   var findCriteria = {
     userToken: otp,
