@@ -467,7 +467,11 @@ exports.getChapterVideo = async (req, res) => {
     let subCategories = await SubCategory.find({
       status: 1,
       chapterId: params.chapterId.trim()
-    }).lean()
+    })
+    .sort({
+      'sortOrder': 1
+  })
+    .lean()
       .catch(err => {
         return res.send({
           success: 0,
