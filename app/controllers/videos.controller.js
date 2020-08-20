@@ -502,6 +502,7 @@ exports.getChapterVideo = async (req, res) => {
       subCategoryId: {
         $in: subIdArray
       },
+      chapterId: params.chapterId.trim(),
       status: 1
     }).populate({
       path: 'videoTypeId',
