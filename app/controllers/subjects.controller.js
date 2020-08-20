@@ -421,7 +421,7 @@
         chapterId,
         status: 1
       }).sort({
-        sortOrder: 1
+        sortOrder: -1
       }).limit(1).lean()
     } else {
       console.log('else');
